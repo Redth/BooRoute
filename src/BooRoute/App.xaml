@@ -1,0 +1,25 @@
+﻿<Application xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="BooRoute.App">
+    <Application.Resources>
+        <ResourceDictionary>
+            <Style TargetType="Label">
+                <Setter Property="FontFamily" Value="OpenSansRegular" />
+                <Setter Property="TextColor" Value="#FFF4DF" />
+            </Style>
+            <Style TargetType="Button">
+                <Setter Property="FontFamily" Value="OpenSansSemibold" />
+                <Setter Property="TextTransform" Value="None" />
+            </Style>
+            <Style TargetType="Shell" ApplyToDerivedTypes="True">
+                <Setter Property="Shell.BackgroundColor" Value="#171125" />
+                <Setter Property="Shell.ForegroundColor" Value="#FFAA61" />
+                <Setter Property="Shell.TitleColor" Value="#FFF4DF" />
+                <Setter Property="Shell.TabBarBackgroundColor" Value="#271D3A" />
+                <Setter Property="Shell.TabBarForegroundColor" Value="#FFAA61" />
+                <Setter Property="Shell.TabBarTitleColor" Value="#FFAA61" />
+                <Setter Property="Shell.TabBarUnselectedColor" Value="#C3B5D6" />
+            </Style>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

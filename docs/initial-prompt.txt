@@ -1,0 +1,46 @@
+Build BooRoute, a .NET MAUI app that helps neighbors organize
+trick-or-treating on Halloween.
+
+There are two experiences in the same app:
+
+For families:
+- Browse participating houses and view their details.
+- See welcoming hours and status: Lights on, Out of treats, or Closed.
+- Filter to houses welcoming visitors now.
+- Filter by scare level: Friendly, Spooky, or Scary.
+- Mark houses as visited, keeping that history private on the device.
+
+For hosts:
+- Register a participating house with a nickname, address, description,
+  welcoming hours, and scare level.
+- Optionally indicate quiet visits and step-free access.
+- Edit the house and change its status.
+- Make changes immediately visible in the family experience.
+
+Use an in-app mock backend shared by both experiences, with async
+service methods and 10 fictional houses. Persist changes and visited
+state across restarts. No server, cloud setup, real authentication,
+or cross-device synchronization. Clearly label the hosting flow
+and dataset as a demo.
+
+Make the demo work regardless of the time of day: seed some houses
+with welcoming hours around the current local time. A house welcomes
+visitors only when its status is Lights on and it is within its hours.
+
+Make it visually polished and unmistakably Halloween:
+midnight purple, pumpkin orange, cream text, house and pumpkin emoji,
+generous spacing, and readable, accessible controls. Use text as well
+as color for statuses.
+
+Keep the first version focused: no embedded map, chat, notifications,
+children’s accounts, or live location tracking.
+
+Inspect the installed SDKs, MAUI workloads, and available simulators
+before choosing a target. Follow existing repository conventions.
+Use straightforward MVVM and dependency injection without
+overengineering.
+
+Give me a short plan, then implement it. Build and launch on an
+available simulator, inspect the running app if automation is
+available, and fix any issues. Be explicit about what you verified
+and what remains untested.

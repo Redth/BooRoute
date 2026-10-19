@@ -1,0 +1,9 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/BooRoute.Core/BooRoute.Core.csproj" />
+    <Project Path="src/BooRoute/BooRoute.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/BooRoute.Core.Tests/BooRoute.Core.Tests.csproj" />
+  </Folder>
+</Solution>
