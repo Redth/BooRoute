@@ -22,7 +22,6 @@ public interface INeighborhoodBackend
 public sealed class JsonDemoStateStore : IDemoStateStore
 {
     private readonly string path;
-    private static readonly JsonSerializerOptions Options = new() { WriteIndented = true };
 
     public JsonDemoStateStore(string path)
     {
@@ -44,7 +43,7 @@ public sealed class JsonDemoStateStore : IDemoStateStore
 
         await using (stream)
         {
-            var state = await JsonSerializer.DeserializeAsync<DemoState>(stream, Options, cancellationToken);
+            var state = await JsonSerializer.DeserializeAsync(stream, DemoJsonContext.Default.DemoState, cancellationToken);
             if (state is null || state.Houses is null || state.Visited is null ||
                 state.Houses.Any(house => house is null || house.Validate().Count != 0) ||
                 state.Houses.Select(house => house.Id).Distinct().Count() != state.Houses.Count ||
@@ -61,7 +60,7 @@ public sealed class JsonDemoStateStore : IDemoStateStore
         {
             await using (var stream = new FileStream(temporaryPath, FileMode.Create, FileAccess.Write, FileShare.None))
             {
-                await JsonSerializer.SerializeAsync(stream, state, Options, cancellationToken);
+                await JsonSerializer.SerializeAsync(stream, state, DemoJsonContext.Default.DemoState, cancellationToken);
                 await stream.FlushAsync(cancellationToken);
             }
             File.Move(temporaryPath, path, overwrite: true);
