@@ -46,6 +46,10 @@ version check; it does not guarantee compatibility with other Xcode versions.
 The Mac app uses MAUI's scene lifecycle, as required by the Xcode 27 SDK, while
 retaining a single window.
 
+`ValidateXcodeVersion` is set to `false` to allow the demo to build with Xcode 27.1
+while the installed iOS workload expects 27.0. This bypasses only the version check;
+the mismatched toolchain remains unsupported and other build errors may still occur.
+
 ## Try the demo
 
 1. Browse **Explore**, turn on **Welcoming visitors now**, and try scare-level or quiet-visit filters.
