@@ -67,5 +67,12 @@
 		<ProjectReference Include="..\BooRoute.Core\BooRoute.Core.csproj" />
 	</ItemGroup>
 
+	<ItemGroup Condition="'$(Configuration)' == 'Debug'">
+		<PackageReference Include="Microsoft.Maui.DevFlow.Agent" Version="0.1.0-preview.13.26512.5" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(Configuration)' == 'Debug' and $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">
+		<CustomEntitlements Include="com.apple.security.network.server" Type="Boolean" Value="true" />
+	</ItemGroup>
 
 </Project>

@@ -52,6 +52,66 @@ retaining a single window.
 while the installed iOS workload expects 27.0. This bypasses only the version check;
 the mismatched toolchain remains unsupported and other build errors may still occur.
 
+## MAUI DevFlow
+
+Debug builds include [MAUI DevFlow](https://github.com/dotnet/maui-labs/tree/main/src/DevFlow)
+for visual-tree inspection, UI automation, screenshots, and app diagnostics.
+The agent and repository-local `Microsoft.Maui.Cli` tool are pinned to
+`0.1.0-preview.13.26512.5`, the latest published preview at setup time.
+This is the current `Microsoft.Maui.*` tooling, not the archived `Redth.MauiDevFlow.*` packages.
+
+Restore the CLI from the repository root; no global tool installation is needed:
+
+```sh
+dotnet tool restore
+dotnet tool run maui -- devflow version
+```
+
+Build and launch a **Debug** app using the Run instructions above. Run DevFlow
+commands from the app directory so discovery can identify the correct project:
+
+```sh
+cd src/BooRoute
+dotnet tool run maui -- devflow diagnose
+dotnet tool run maui -- devflow wait
+dotnet tool run maui -- devflow agent status
+dotnet tool run maui -- devflow ui tree --depth 8
+```
+
+The broker discovers the agent's dynamic port automatically. If multiple app
+instances are running, use `dotnet tool run maui -- devflow list` to find the
+desired platform's port and pass `--agent-port <port>` to inspection commands.
+`--platform` is not an agent-selection filter.
+Mac Catalyst keeps its sandbox enabled and adds the network-server entitlement only in Debug.
+Release builds contain neither the DevFlow package nor its startup registration
+or additional entitlement.
+
+Mac Catalyst is the verified runtime target for this integration. The iOS app
+builds, but its existing startup configuration lacks the UIKit scene lifecycle
+required on iOS 27/27.1, so the agent cannot start there until that separate
+startup issue is resolved.
+
+For Android, forward the broker before launching the app, then forward the agent
+port reported by `devflow list`:
+
+```sh
+adb reverse tcp:19223 tcp:19223
+adb forward tcp:<agent-port> tcp:<agent-port>
+```
+
+The CLI's bundled GitHub Copilot skills are checked in under `.github/skills`.
+After updating the CLI version in `dotnet-tools.json`, refresh them from the
+repository root with:
+
+```sh
+dotnet tool run maui -- devflow init --scope project --target github --ci
+```
+
+Clients that support MCP can launch `dotnet tool run maui -- devflow mcp` from
+the app directory as a stdio server. No MCP connection is required for the CLI
+or skills. DevFlow can inspect and change app state; use it only with local
+development builds and fictional demo data.
+
 ## Try the demo
 
 1. Browse **Explore**, turn on **Welcoming visitors now**, and try scare-level or quiet-visit filters.
