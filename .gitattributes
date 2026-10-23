@@ -1,3 +1,5 @@
 * text=auto eol=lf
 *.png binary
 *.ttf binary
+
+.github/workflows/*.lock.yml linguist-generated=true
