@@ -48,6 +48,12 @@ adb -s emulator-5554 shell monkey -p com.stephanedelcroix.booroute 1
 Replace `emulator-5554` with the serial from `adb devices`. Installing a Debug
 APK alone can leave older fast-deployed assemblies in use.
 
+The **Map** tab uses Google Maps on
+Android, so replace `YOUR_GOOGLE_MAPS_API_KEY` in
+`src/BooRoute/Platforms/Android/AndroidManifest.xml` with your own key
+([setup guide](https://learn.microsoft.com/dotnet/maui/user-interface/controls/map)).
+iOS and Mac Catalyst use Apple Maps and need no key. The Map tab is not available on Windows.
+
 For Mac Catalyst on Apple Silicon:
 
 ```sh
@@ -135,6 +141,9 @@ development builds and fictional demo data.
    when undoing a visit, and respects the device's reduced-motion setting.
 3. Switch to **Demo host**, edit that house, and change its status to **Out of treats**.
 4. Return to Explore: it no longer appears under welcoming-only filtering.
+5. Open **Map** to see every demo house as a pin. Tap a pin's callout to open its details.
+   The addresses are fictional, so pins are placed at stable, made-up spots inside a
+   public park (Berlin's Tiergarten) and never point at a real home.
 5. Register another fictional house. Restart the app to see that houses and visits persist.
 
 Ten houses are seeded on first use. Their initial daily welcoming windows are
