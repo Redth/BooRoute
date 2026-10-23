@@ -1,4 +1,5 @@
 using BooRoute.ViewModels;
+using BooRoute.Core.Localization;
 
 namespace BooRoute.Pages;
 
@@ -7,7 +8,8 @@ public sealed class HostEditorPage : ContentPage
     public HostEditorPage(HostEditorViewModel viewModel)
     {
         BindingContext = viewModel;
-        Title = "Demo house";
+        var text = viewModel.Text.Strings;
+        Title = text.DemoHouse;
         BackgroundColor = Ui.Midnight;
         HideSoftInputOnTapped = true;
         SafeAreaEdges = SafeAreaEdges.Container;
@@ -18,30 +20,30 @@ public sealed class HostEditorPage : ContentPage
             Children =
             {
                 Ui.Text("🏠 " + viewModel.Heading, 29, bold: true),
-                Ui.DemoBanner("DEMO HOST · Public venues or fictional addresses only · No private homes · Not real registration"),
-                Ui.Text("House nickname", 15, bold: true),
-                Entry("Nickname", "e.g. The Pumpkin Porch", "NicknameEntry", 60),
-                Ui.Text("Public venue or fictional address", 15, bold: true),
-                Entry("Address", "e.g. 13 Make-Believe Lane", "AddressEntry", 120),
-                Ui.Text("Tell families what to expect", 15, bold: true),
-                DescriptionEditor(),
-                Ui.Text("Daily welcoming hours", 15, bold: true),
-                TimeFields(),
-                Ui.Text("Scare level", 15, bold: true),
-                Ui.Picker("Scare level", nameof(viewModel.ScareOptions), nameof(viewModel.ScareIndex), "HouseScarePicker"),
-                Ui.Text("Porch status", 15, bold: true),
-                Ui.Picker("Porch status", nameof(viewModel.StatusOptions), nameof(viewModel.StatusIndex), "HouseStatusPicker"),
-                Ui.Toggle("Quiet visits available", nameof(viewModel.QuietVisits), "QuietVisitsSwitch"),
-                Ui.Toggle("Step-free access", nameof(viewModel.StepFreeAccess), "StepFreeSwitch"),
+                Ui.DemoBanner(text.HostDemoBanner),
+                Ui.Text(text.HouseNickname, 15, bold: true),
+                Entry("Nickname", text.NicknamePlaceholder, text.HouseNickname, "NicknameEntry", 60),
+                Ui.Text(text.FictionalAddress, 15, bold: true),
+                Entry("Address", text.AddressPlaceholder, text.FictionalAddress, "AddressEntry", 120),
+                Ui.Text(text.DescriptionHeading, 15, bold: true),
+                DescriptionEditor(text),
+                Ui.Text(text.DailyHours, 15, bold: true),
+                TimeFields(text),
+                Ui.Text(text.ScareLevel, 15, bold: true),
+                Ui.Picker(text.ScareLevel, nameof(viewModel.ScareOptions), nameof(viewModel.ScareIndex), "HouseScarePicker"),
+                Ui.Text(text.PorchStatus, 15, bold: true),
+                Ui.Picker(text.PorchStatus, nameof(viewModel.StatusOptions), nameof(viewModel.StatusIndex), "HouseStatusPicker"),
+                Ui.Toggle(text.QuietVisitsAvailable, nameof(viewModel.QuietVisits), "QuietVisitsSwitch"),
+                Ui.Toggle(text.StepFreeAccess, nameof(viewModel.StepFreeAccess), "StepFreeSwitch"),
                 Ui.Errors(),
-                Ui.Button("Save demo house", "SaveHouseButton", viewModel.SaveCommand),
-                Ui.Text("Saved to the in-app mock backend on this device only.", 13, Ui.Muted)
+                Ui.Button(text.SaveHouse, "SaveHouseButton", viewModel.SaveCommand),
+                Ui.Text(text.StorageNotice, 13, Ui.Muted)
             }
         };
         Content = new ScrollView { Content = fields };
     }
 
-    private static Entry Entry(string property, string placeholder, string id, int maximumLength)
+    private static Entry Entry(string property, string placeholder, string description, string id, int maximumLength)
     {
         var entry = new Entry
         {
@@ -56,15 +58,15 @@ public sealed class HostEditorPage : ContentPage
             ReturnType = ReturnType.Next
         };
         entry.SetBinding(Microsoft.Maui.Controls.Entry.TextProperty, property);
-        SemanticProperties.SetDescription(entry, placeholder);
+        SemanticProperties.SetDescription(entry, description);
         return entry;
     }
 
-    private static Editor DescriptionEditor()
+    private static Editor DescriptionEditor(AppTextLocalized text)
     {
         var editor = new Editor
         {
-            Placeholder = "Decorations, treats, and how spooky it gets…",
+            Placeholder = text.DescriptionPlaceholder,
             AutomationId = "DescriptionEditor",
             MaxLength = 500,
             AutoSize = EditorAutoSizeOption.TextChanges,
@@ -75,21 +77,21 @@ public sealed class HostEditorPage : ContentPage
             FontSize = 16
         };
         editor.SetBinding(Editor.TextProperty, nameof(HostEditorViewModel.Description));
-        SemanticProperties.SetDescription(editor, "Description for visiting families");
+        SemanticProperties.SetDescription(editor, text.DescriptionAccessibility);
         return editor;
     }
 
-    private static View TimeFields()
+    private static View TimeFields(AppTextLocalized text)
     {
-        var opens = new TimePicker { AutomationId = "OpeningTimePicker", TextColor = Ui.Cream, Format = "HH:mm" };
+        var opens = new TimePicker { AutomationId = "OpeningTimePicker", TextColor = Ui.Cream, Format = "t" };
         opens.SetBinding(TimePicker.TimeProperty, nameof(HostEditorViewModel.OpensAt));
-        SemanticProperties.SetDescription(opens, "Opening time");
-        var closes = new TimePicker { AutomationId = "ClosingTimePicker", TextColor = Ui.Cream, Format = "HH:mm" };
+        SemanticProperties.SetDescription(opens, text.OpeningTime);
+        var closes = new TimePicker { AutomationId = "ClosingTimePicker", TextColor = Ui.Cream, Format = "t" };
         closes.SetBinding(TimePicker.TimeProperty, nameof(HostEditorViewModel.ClosesAt));
-        SemanticProperties.SetDescription(closes, "Closing time");
+        SemanticProperties.SetDescription(closes, text.ClosingTime);
         var grid = new Grid { ColumnDefinitions = [new(GridLength.Star), new(GridLength.Star)], ColumnSpacing = 18 };
-        grid.Add(new VerticalStackLayout { Children = { Ui.Text("Opens", 13, Ui.Muted), opens } });
-        grid.Add(new VerticalStackLayout { Children = { Ui.Text("Closes", 13, Ui.Muted), closes } }, 1);
+        grid.Add(new VerticalStackLayout { Children = { Ui.Text(text.Opens, 13, Ui.Muted), opens } });
+        grid.Add(new VerticalStackLayout { Children = { Ui.Text(text.Closes, 13, Ui.Muted), closes } }, 1);
         return grid;
     }
 }

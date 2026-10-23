@@ -1,5 +1,6 @@
 using System.Collections.ObjectModel;
 using BooRoute.Core;
+using BooRoute.Core.Localization;
 
 namespace BooRoute.ViewModels;
 
@@ -15,34 +16,45 @@ public sealed class HouseCard
     public string Status { get; }
     public string Features { get; }
     public string VisitStatus { get; }
+    public string EditDescription { get; }
+    public string ViewDescription { get; }
+    internal string CultureKey { get; }
 
-    public HouseCard(House house, bool visited, DateTimeOffset localNow)
+    public HouseCard(House house, bool visited, DateTimeOffset localNow, AppText? text = null)
     {
+        text ??= AppText.Default;
+        CultureKey = CurrentCultureKey;
         House = house;
         Visited = visited;
         IsWelcoming = house.IsWelcoming(localNow);
         Emoji = house.ScareLevel == ScareLevel.Scary ? "🎃" : "🏠";
-        Hours = $"{house.OpensAt:HH:mm} – {house.ClosesAt:HH:mm}";
+        Hours = text.Hours(house.OpensAt, house.ClosesAt);
         Status = house.Status switch
         {
-            HouseStatus.OutOfTreats => "Out of treats",
-            HouseStatus.Closed => "Closed",
-            _ => IsWelcoming ? "Lights on · Welcome!" : "Lights on · Outside hours"
+            HouseStatus.OutOfTreats => text.Strings.OutOfTreats,
+            HouseStatus.Closed => text.Strings.Closed,
+            _ => IsWelcoming ? text.Strings.LightsOnWelcome : text.Strings.LightsOnOutsideHours
         };
         Features = string.Join(" · ", new[]
         {
-            house.ScareLevel.ToString(),
-            house.QuietVisits ? "Quiet visits" : null,
-            house.StepFreeAccess ? "Step-free" : null
+            text.ScareName(house.ScareLevel),
+            house.QuietVisits ? text.Strings.QuietVisits : null,
+            house.StepFreeAccess ? text.Strings.StepFree : null
         }.Where(value => value is not null));
-        VisitStatus = visited ? "✓ Visited" : "";
+        VisitStatus = visited ? text.Strings.Visited : "";
+        EditDescription = text.Strings.EditHouseDescriptionFormat(house.Nickname);
+        ViewDescription = text.Strings.ViewHouseDescriptionFormat(house.Nickname);
     }
+
+    internal static string CurrentCultureKey =>
+        $"{AppText.ResourceCulture.Name}|{AppText.FormattingCulture.Name}|{AppText.FormattingCulture.DateTimeFormat.ShortTimePattern}";
 }
 
 public sealed class HouseCardCollection : ObservableCollection<HouseCard>
 {
-    public void Update(IEnumerable<House> orderedHouses, IReadOnlySet<Guid> visited, DateTimeOffset localNow)
+    public void Update(IEnumerable<House> orderedHouses, IReadOnlySet<Guid> visited, DateTimeOffset localNow, AppText? text = null)
     {
+        var cultureKey = HouseCard.CurrentCultureKey;
         var houses = orderedHouses.ToArray();
         var incoming = houses.ToDictionary(house => house.Id);
         var existing = this.ToDictionary(card => card.House.Id);
@@ -59,9 +71,10 @@ public sealed class HouseCardCollection : ObservableCollection<HouseCard>
             var isVisited = visited.Contains(house.Id);
             existing.TryGetValue(house.Id, out var previous);
             var card = previous is not null && previous.House == house &&
-                       previous.Visited == isVisited && previous.IsWelcoming == house.IsWelcoming(localNow)
+                       previous.Visited == isVisited && previous.IsWelcoming == house.IsWelcoming(localNow) &&
+                       previous.CultureKey == cultureKey
                 ? previous
-                : new HouseCard(house, isVisited, localNow);
+                : new HouseCard(house, isVisited, localNow, text);
 
             if (previous is null)
             {

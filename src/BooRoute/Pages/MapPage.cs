@@ -17,7 +17,8 @@ public sealed class MapPage : ContentPage
         BindingContext = viewModel;
         BackgroundColor = Ui.Midnight;
         SafeAreaEdges = SafeAreaEdges.Container;
-        Title = "Map";
+        var text = viewModel.Text.Strings;
+        Title = text.Map;
 
         map = new Map(MapSpan.FromCenterAndRadius(
             new Location(DemoMap.CenterLatitude, DemoMap.CenterLongitude), Distance.FromMeters(DemoMap.InitialRadiusMeters)))
@@ -26,7 +27,7 @@ public sealed class MapPage : ContentPage
             MapType = MapType.Street,
             IsShowingUser = false
         };
-        SemanticProperties.SetDescription(map, "Map of the demo neighborhood houses");
+        SemanticProperties.SetDescription(map, text.MapAccessibility);
 
         var summary = Ui.Bound(nameof(viewModel.Summary), 14, Ui.Muted);
         summary.AutomationId = "MapHouseCountLabel";
@@ -36,8 +37,8 @@ public sealed class MapPage : ContentPage
             Margin = new Thickness(22, 12, 22, 10),
             Children =
             {
-                Ui.Text("🗺️ The demo neighborhood", 26, bold: true),
-                Ui.DemoBanner("DEMO · Real public venues · Treats and hours are simulated"),
+                Ui.Text("🗺️ " + text.MapHeading, 26, bold: true),
+                Ui.DemoBanner(text.MapBanner),
                 summary,
                 Ui.Errors()
             }
@@ -48,8 +49,9 @@ public sealed class MapPage : ContentPage
         layout.Add(map, 0, 1);
         Content = layout;
 
-        viewModel.HousesChanged += (_, _) => UpdatePins();
     }
+
+    private void OnHousesChanged(object? sender, EventArgs e) => UpdatePins();
 
     private void UpdatePins()
     {
@@ -76,6 +78,15 @@ public sealed class MapPage : ContentPage
     protected override async void OnAppearing()
     {
         base.OnAppearing();
+        viewModel.HousesChanged += OnHousesChanged;
         await viewModel.RefreshAsync();
     }
+
+    protected override void OnDisappearing()
+    {
+        StopUpdates();
+        base.OnDisappearing();
+    }
+
+    public void StopUpdates() => viewModel.HousesChanged -= OnHousesChanged;
 }
