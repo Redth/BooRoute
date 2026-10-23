@@ -30,7 +30,7 @@ public sealed class HouseDetailsPage : ContentPage
                 Spacing = 18,
                 Children =
                 {
-                    Ui.Text(card.Emoji, 72), name, Ui.Text(house.Address, 16, Ui.Muted),
+                    Ui.Art(card.ScareArt, 72), name, Ui.Text(house.Address, 16, Ui.Muted),
                     Ui.DemoBanner("DEMO DESTINATION · Not a participating host · Do not visit for treats"),
                     status, Ui.Text($"Simulated welcoming hours: {card.Hours}", 17),
                     Ui.Text(house.Description, 18),

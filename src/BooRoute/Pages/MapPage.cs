@@ -36,7 +36,7 @@ public sealed class MapPage : ContentPage
             Margin = new Thickness(22, 12, 22, 10),
             Children =
             {
-                Ui.Text("🗺️ The demo neighborhood", 26, bold: true),
+                Ui.Heading("heading_map.png", "The demo neighborhood", 26),
                 Ui.DemoBanner("DEMO · Real public venues · Treats and hours are simulated"),
                 summary,
                 Ui.Errors()
@@ -58,7 +58,7 @@ public sealed class MapPage : ContentPage
         {
             var pin = new Pin
             {
-                Label = $"{card.Emoji} {card.Nickname}",
+                Label = $"{card.Nickname} · {card.House.ScareLevel}",
                 Address = string.IsNullOrEmpty(card.VisitStatus) ? card.Status : $"{card.Status} · {card.VisitStatus}",
                 Location = new Location(latitude, longitude),
                 Type = PinType.Place
