@@ -1,5 +1,7 @@
 using BooRoute.Core;
+using BooRoute.Core.Localization;
 using BooRoute.ViewModels;
+using System.Globalization;
 
 namespace BooRoute.Core.Tests;
 
@@ -43,7 +45,7 @@ public sealed class HouseCardFormattingTests
     [InlineData(7, 5, 9, 9, "07:05 \u2013 09:09")]
     [InlineData(17, 7, 21, 43, "17:07 \u2013 21:43")]
     [InlineData(23, 8, 1, 4, "23:08 \u2013 01:04")]
-    public void HoursUsesZeroPadded24HourTimesInOpeningThenClosingOrder(
+    public void HoursUsesTheConfiguredFormatterInOpeningThenClosingOrder(
         int openingHour, int openingMinute, int closingHour, int closingMinute, string expected)
     {
         var house = TestHouse with
@@ -52,7 +54,11 @@ public sealed class HouseCardFormattingTests
             ClosesAt = new(closingHour, closingMinute)
         };
 
-        var card = new HouseCard(house, false, Now);
+        var text = new AppText(AppText.Default.Strings)
+        {
+            FormatTime = time => time.ToString("HH:mm", CultureInfo.InvariantCulture)
+        };
+        var card = new HouseCard(house, false, Now, text);
 
         Assert.Equal(expected, card.Hours);
     }

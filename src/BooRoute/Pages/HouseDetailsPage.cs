@@ -10,8 +10,9 @@ public sealed class HouseDetailsPage : ContentPage
     public HouseDetailsPage(HouseDetailsViewModel viewModel)
     {
         this.viewModel = viewModel;
+        var text = viewModel.Text.Strings;
         BindingContext = viewModel;
-        Title = "House details";
+        Title = text.HouseDetails;
         BackgroundColor = Ui.Midnight;
         var house = viewModel.House;
         var card = viewModel.Card;
@@ -31,22 +32,22 @@ public sealed class HouseDetailsPage : ContentPage
                 Children =
                 {
                     Ui.Art(card.ScareArt, 72), name, Ui.Text(house.Address, 16, Ui.Muted),
-                    Ui.DemoBanner("DEMO DESTINATION · Not a participating host · Do not visit for treats"),
-                    status, Ui.Text($"Simulated welcoming hours: {card.Hours}", 17),
+                    Ui.DemoBanner(text.FictionalDestination),
+                    status, Ui.Text(text.DailyHoursDescriptionFormat(card.Hours), 17),
                     Ui.Text(house.Description, 18),
                     Ui.Card(new VerticalStackLayout
                     {
                         Spacing = 12,
                         Children =
                         {
-                            Ui.Text($"Scare level: {house.ScareLevel}", 17, bold: true),
-                            Ui.Text(house.QuietVisits ? "✓ Quiet visits available" : "Quiet visits not indicated", 16),
-                            Ui.Text(house.StepFreeAccess ? "✓ Step-free access indicated" : "Step-free access not indicated", 16),
-                            Ui.Text("Scare levels, quiet visits and accessibility are demo data, not verified venue information.", 13, Ui.Muted)
+                            Ui.Text(text.ScareDescriptionFormat(viewModel.Text.ScareName(house.ScareLevel)), 17, bold: true),
+                            Ui.Text(house.QuietVisits ? text.QuietAvailable : text.QuietNotIndicated, 16),
+                            Ui.Text(house.StepFreeAccess ? text.StepFreeIndicated : text.StepFreeNotIndicated, 16),
+                            Ui.Text(text.AccessibilityDisclaimer, 13, Ui.Muted)
                         }
                     }),
                     Ui.Errors(), visit,
-                    Ui.Text("Your visit history stays on this device. No accounts. No tracking.", 13, Ui.Muted)
+                    Ui.Text(text.VisitPrivacy, 13, Ui.Muted)
                 }
             }
         };

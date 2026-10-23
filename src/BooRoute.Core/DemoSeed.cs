@@ -1,3 +1,5 @@
+using BooRoute.Core.Localization;
+
 namespace BooRoute.Core;
 
 public static class DemoSeed
@@ -21,8 +23,7 @@ public static class DemoSeed
         var closes = TimeOnly.FromDateTime(localNow.AddHours(4).DateTime);
         var houses = locations.Select((location, index) => new House(
             Guid.NewGuid(), location.Name, location.Address,
-            $"Demo stop at {location.Name}. This is a real public venue, not a registered Halloween host. " +
-            "Treats, welcoming hours, scare levels, quiet visits and accessibility are simulated. Do not visit for treats.",
+            AppText.Default.Strings.PublicVenueDescriptionFormat(location.Name),
             opens, closes, (ScareLevel)(index % 3),
             index is 3 or 7 ? HouseStatus.OutOfTreats : index == 9 ? HouseStatus.Closed : HouseStatus.LightsOn,
             index is 0 or 1 or 2 or 4 or 6, index % 3 != 1)).ToList();

@@ -57,6 +57,12 @@ Android, so replace `YOUR_GOOGLE_MAPS_API_KEY` in
 `src/BooRoute/Platforms/Android/AndroidManifest.xml` with your own key
 ([setup guide](https://learn.microsoft.com/dotnet/maui/user-interface/controls/map)).
 iOS and Mac Catalyst use Apple Maps and need no key. The Map tab is not available on Windows.
+For an APK that can be installed directly with `adb` instead of IDE fast deployment:
+
+```sh
+dotnet build src/BooRoute/BooRoute.csproj -f net11.0-android \
+  -p:RuntimeIdentifier=android-arm64 -p:EmbedAssembliesIntoApk=true
+```
 
 For Mac Catalyst on Apple Silicon:
 
@@ -70,8 +76,10 @@ Use the Xcode version required by the installed Mac Catalyst workload. For local
 preview testing with Xcode 27.1 and the .NET 11 RC2 workload that expects Xcode 27.0,
 append `-p:ValidateXcodeVersion=false` to the build command. This only skips the
 version check; it does not guarantee compatibility with other Xcode versions.
-The Mac app uses MAUI's scene lifecycle, as required by the Xcode 27 SDK, while
+The iOS and Mac apps use MAUI's scene lifecycle, as required by the Xcode 27 SDK, while
 retaining a single window.
+When changing Apple platform `Info.plist` files, use `-t:Rebuild` to ensure the
+updated metadata is packaged by the preview toolchain.
 
 `ValidateXcodeVersion` is set to `false` to allow the demo to build with Xcode 27.1
 while the installed iOS workload expects 27.0. This bypasses only the version check;
@@ -238,6 +246,37 @@ Android runtime behavior, Windows, full disconnect/reconnect and focus testing,
 physical-device performance, allocation bounds, and frame/hitch measurements
 remain unverified.
 
+## Canadian English and French
+
+Open **Settings → Language and region** and choose **Use device settings**,
+**English (Canada)**, or **Français (Canada)**, then apply. Navigation, pages,
+map labels, validation and regional time formatting update immediately; the
+choice persists across restarts. Settings becomes **Réglages** in French.
+Applying the setting closes open detail/editor pages, so save edits first.
+Device mode follows the system app language and regional time settings.
+Canadian English is the English fallback; French resources cover `fr-CA` and
+other French locales. Android 13+ and iOS also expose system per-app language
+selection; the explicit in-app selection takes precedence.
+
+[Shiny LocalizeGen](https://shinylib.net/localizegen/) generates typed accessors
+and DI registration from `src/BooRoute.Core/Localization/AppText.resx` and
+`AppText.fr.resx`. Keep both files' keys and format arguments in sync. Navigation,
+filters, statuses, accessibility descriptions, validation, and errors use these
+resources; enum values and the `neighborhood.json` format remain unchanged.
+
+New demo stops retain their real Cologne venue names and addresses, with a
+description in the first-launch language. Saved names, addresses and descriptions
+are editable data: changing language does not translate or overwrite those fields,
+reset visits, or reseed data. The no-participation and simulated-accessibility
+warnings remain visible in both languages.
+
+House cards and native time-picker fields use the selected locale's short-time
+formatter. Device mode preserves the native user's 12/24-hour preference.
+Welcoming rules still use device-local wall time for this single-device demo.
+Timezone coverage includes Newfoundland's half-hour offset, the autumn clock
+change, Saskatchewan, and Yukon. A future multi-region service would need each
+house's timezone, not just the viewer's device timezone.
+
 ## Structure
 
 - `src/BooRoute`: native MAUI pages, MVVM view models, and dependency injection.
@@ -252,9 +291,14 @@ dotnet test tests/BooRoute.Core.Tests/BooRoute.Core.Tests.csproj
 
 Verified for this initial version: the iOS simulator build, launch, welcoming/scare/quiet
 filters, private visit tracking, demo-host status changes, registration validation,
-and persistence after process restart. All 24 core tests pass. Mac Catalyst startup
+and persistence after process restart. The portable suite covers resource
+parity/fallback, pluralization, Unicode, cross-language persistence, and Canadian
+timezone cases. Mac Catalyst startup
 has also been verified on Apple Silicon with Xcode 27.1 using the preview version
-check override above. Android, Windows, and physical devices have not been verified.
+check override above. The localized app also builds for iOS, Android (Debug and
+Release), and Mac Catalyst; French startup has been checked on an iOS simulator and
+an Android API 35 emulator, including the trimmed Android Release package.
+Windows and physical devices have not been verified.
 
 The service boundary can later be replaced with a real backend. Real authentication,
 host ownership, moderation, consent, and safe address sharing would be necessary

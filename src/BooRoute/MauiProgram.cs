@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using BooRoute.Core;
+using BooRoute.Core.Localization;
 
 #if DEBUG
 using Microsoft.Maui.DevFlow.Agent;
@@ -11,6 +12,7 @@ public static class MauiProgram
 {
     public static MauiApp CreateMauiApp()
     {
+        var localeSettings = DeviceLocalization.Configure();
         var builder = MauiApp.CreateBuilder();
         builder
             .UseMauiApp<App>()
@@ -23,6 +25,12 @@ public static class MauiProgram
                 fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
             });
 
+        builder.Services.AddStronglyTypedLocalizations();
+        builder.Services.AddSingleton(localeSettings);
+        builder.Services.AddSingleton(provider => new AppText(provider.GetRequiredService<AppTextLocalized>())
+        {
+            FormatTime = DeviceLocalization.FormatTime
+        });
         builder.Services.AddSingleton<TimeProvider>(TimeProvider.System);
         builder.Services.AddSingleton<IDemoStateStore>(_ =>
             new JsonDemoStateStore(Path.Combine(FileSystem.AppDataDirectory, "neighborhood.json")));

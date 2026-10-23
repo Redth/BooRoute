@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms</value></resheader>
+  <data name="Explore" xml:space="preserve"><value>Explorer</value></data>
+  <data name="MyVisits" xml:space="preserve"><value>Mes visites</value></data>
+  <data name="DemoHost" xml:space="preserve"><value>Hôte démo</value></data>
+  <data name="HostHeading" xml:space="preserve"><value>Votre perron, vos règles.</value></data>
+  <data name="VisitsHeading" xml:space="preserve"><value>Un parcours plein de friandises.</value></data>
+  <data name="HostSubtitle" xml:space="preserve"><value>Hébergement de démonstration seulement. Aucun compte ni propriétaire vérifié.</value></data>
+  <data name="VisitsSubtitle" xml:space="preserve"><value>Vos visites restent sur cet appareil. Personne d’autre ne les voit.</value></data>
+  <data name="ExploreSubtitle" xml:space="preserve"><value>Explorez les arrêts démo près de Microsoft à Cologne.</value></data>
+  <data name="DemoBanner" xml:space="preserve"><value>DÉMO · Aucun hôte participant · Tous les détails d’Halloween sont simulés</value></data>
+  <data name="WelcomingOnly" xml:space="preserve"><value>Accueillent des visiteurs en ce moment</value></data>
+  <data name="QuietOnly" xml:space="preserve"><value>Visites calmes seulement</value></data>
+  <data name="ScareLevel" xml:space="preserve"><value>Niveau de frayeur</value></data>
+  <data name="EveryScareLevel" xml:space="preserve"><value>Tous les niveaux de frayeur</value></data>
+  <data name="ScareFriendly" xml:space="preserve"><value>Amical</value></data>
+  <data name="ScareSpooky" xml:space="preserve"><value>Mystérieux</value></data>
+  <data name="ScareScary" xml:space="preserve"><value>Effrayant</value></data>
+  <data name="RegisterHouse" xml:space="preserve"><value>+ Ajouter une maison démo</value></data>
+  <data name="RefreshNeighbourhood" xml:space="preserve"><value>Actualiser le voisinage</value></data>
+  <data name="EmptyHeading" xml:space="preserve"><value>Aucune maison ici… pour l’instant.</value></data>
+  <data name="EmptyVisits" xml:space="preserve"><value>Ouvrez une maison dans Explorer et indiquez que vous l’avez visitée.</value></data>
+  <data name="EmptyHouses" xml:space="preserve"><value>Essayez un autre filtre ou ajoutez une maison démo.</value></data>
+  <data name="EditHouse" xml:space="preserve"><value>Modifier la maison et son statut</value></data>
+  <data name="VisitDetails" xml:space="preserve"><value>Voir les détails</value></data>
+  <data name="EditHouseDescription" xml:space="preserve"><value>Modifier {0}</value></data>
+  <data name="ViewHouseDescription" xml:space="preserve"><value>Voir {0}</value></data>
+  <data name="HouseDetails" xml:space="preserve"><value>Détails de la maison</value></data>
+  <data name="FictionalDestination" xml:space="preserve"><value>DESTINATION DÉMO · Aucun hôte participant · Ne venez pas chercher de friandises</value></data>
+  <data name="DailyHours" xml:space="preserve"><value>Heures d’accueil quotidiennes</value></data>
+  <data name="DailyHoursDescription" xml:space="preserve"><value>Heures d’accueil simulées : {0}</value></data>
+  <data name="ScareDescription" xml:space="preserve"><value>Niveau de frayeur : {0}</value></data>
+  <data name="QuietAvailable" xml:space="preserve"><value>✓ Visites calmes offertes</value></data>
+  <data name="QuietNotIndicated" xml:space="preserve"><value>Visites calmes non précisées</value></data>
+  <data name="StepFreeIndicated" xml:space="preserve"><value>✓ Accès sans marches indiqué</value></data>
+  <data name="StepFreeNotIndicated" xml:space="preserve"><value>Accès sans marches non précisé</value></data>
+  <data name="AccessibilityDisclaimer" xml:space="preserve"><value>La frayeur, les visites calmes et l’accessibilité sont simulées, pas des renseignements vérifiés sur le lieu.</value></data>
+  <data name="VisitPrivacy" xml:space="preserve"><value>Votre historique de visites reste sur cet appareil. Aucun compte. Aucun suivi.</value></data>
+  <data name="DemoHouse" xml:space="preserve"><value>Maison démo</value></data>
+  <data name="NewHouseHeading" xml:space="preserve"><value>Accueillez le voisinage.</value></data>
+  <data name="EditHouseHeading" xml:space="preserve"><value>Gardez votre perron à jour.</value></data>
+  <data name="HostDemoBanner" xml:space="preserve"><value>HÔTE DÉMO · Lieux publics ou adresses fictives seulement · Aucun domicile privé · Aucune inscription réelle</value></data>
+  <data name="HouseNickname" xml:space="preserve"><value>Surnom de la maison</value></data>
+  <data name="NicknamePlaceholder" xml:space="preserve"><value>Ex. : Le perron aux citrouilles</value></data>
+  <data name="FictionalAddress" xml:space="preserve"><value>Lieu public ou adresse fictive</value></data>
+  <data name="AddressPlaceholder" xml:space="preserve"><value>Ex. : 13, allée Imaginaire</value></data>
+  <data name="DescriptionHeading" xml:space="preserve"><value>Dites aux familles à quoi s’attendre</value></data>
+  <data name="DescriptionPlaceholder" xml:space="preserve"><value>Décorations, friandises et ambiance…</value></data>
+  <data name="DescriptionAccessibility" xml:space="preserve"><value>Description pour les familles en visite</value></data>
+  <data name="PorchStatus" xml:space="preserve"><value>Statut du perron</value></data>
+  <data name="QuietVisitsAvailable" xml:space="preserve"><value>Visites calmes offertes</value></data>
+  <data name="StepFreeAccess" xml:space="preserve"><value>Accès sans marches</value></data>
+  <data name="SaveHouse" xml:space="preserve"><value>Enregistrer la maison démo</value></data>
+  <data name="StorageNotice" xml:space="preserve"><value>Enregistré dans le service simulé de l’appli, sur cet appareil seulement.</value></data>
+  <data name="OpeningTime" xml:space="preserve"><value>Heure d’ouverture</value></data>
+  <data name="ClosingTime" xml:space="preserve"><value>Heure de fermeture</value></data>
+  <data name="Opens" xml:space="preserve"><value>Ouverture</value></data>
+  <data name="Closes" xml:space="preserve"><value>Fermeture</value></data>
+  <data name="Hours" xml:space="preserve"><value>{0} – {1}</value></data>
+  <data name="LightsOn" xml:space="preserve"><value>Lumières allumées</value></data>
+  <data name="OutOfTreats" xml:space="preserve"><value>Plus de friandises</value></data>
+  <data name="Closed" xml:space="preserve"><value>Fermé</value></data>
+  <data name="LightsOnWelcome" xml:space="preserve"><value>Lumières allumées · Bienvenue !</value></data>
+  <data name="LightsOnOutsideHours" xml:space="preserve"><value>Lumières allumées · Hors des heures d’accueil</value></data>
+  <data name="QuietVisits" xml:space="preserve"><value>Visites calmes</value></data>
+  <data name="StepFree" xml:space="preserve"><value>Sans marches</value></data>
+  <data name="Visited" xml:space="preserve"><value>✓ Visité</value></data>
+  <data name="UndoVisited" xml:space="preserve"><value>✓ Visité — toucher pour annuler</value></data>
+  <data name="MarkVisited" xml:space="preserve"><value>Marquer comme visité</value></data>
+  <data name="InitialSummary" xml:space="preserve"><value>Découvrez votre voisinage de démonstration</value></data>
+  <data name="HouseCountNone" xml:space="preserve"><value>Aucune maison</value></data>
+  <data name="HouseCountOne" xml:space="preserve"><value>1 maison</value></data>
+  <data name="HouseCountMany" xml:space="preserve"><value>{0} maisons</value></data>
+  <data name="WelcomingCountNone" xml:space="preserve"><value>Aucune n’accueille en ce moment</value></data>
+  <data name="WelcomingCountOne" xml:space="preserve"><value>1 accueille en ce moment</value></data>
+  <data name="WelcomingCountMany" xml:space="preserve"><value>{0} accueillent en ce moment</value></data>
+  <data name="Summary" xml:space="preserve"><value>{0} · {1}</value></data>
+  <data name="ActionFailed" xml:space="preserve"><value>Ça n’a pas fonctionné. Veuillez réessayer.</value></data>
+  <data name="StorageFailed" xml:space="preserve"><value>Impossible d’accéder aux données démo. Vérifiez l’espace disponible sur l’appareil et réessayez.</value></data>
+  <data name="SavedDataInvalid" xml:space="preserve"><value>Les données démo enregistrées sont invalides. Elles n’ont pas été remplacées.</value></data>
+  <data name="SelectHouse" xml:space="preserve"><value>Sélectionnez d’abord une maison.</value></data>
+  <data name="HouseMissing" xml:space="preserve"><value>Cette maison ne fait pas partie du voisinage de démonstration.</value></data>
+  <data name="NicknameRequired" xml:space="preserve"><value>Donnez un surnom à votre maison.</value></data>
+  <data name="NicknameTooLong" xml:space="preserve"><value>Limitez le surnom à 60 caractères.</value></data>
+  <data name="AddressRequired" xml:space="preserve"><value>Entrez un lieu public ou une adresse fictive.</value></data>
+  <data name="PublicVenueDescription" xml:space="preserve"><value>Arrêt démo à {0}. Ce lieu public réel n’est pas un hôte d’Halloween inscrit. Les friandises, heures, niveaux de frayeur, visites calmes et accès sont simulés. Ne venez pas chercher de friandises.</value></data>
+  <data name="Settings" xml:space="preserve"><value>Réglages</value></data>
+  <data name="Locale" xml:space="preserve"><value>Langue et région</value></data>
+  <data name="SystemLocale" xml:space="preserve"><value>Utiliser les réglages de l’appareil</value></data>
+  <data name="ApplyLocale" xml:space="preserve"><value>Appliquer la langue et la région</value></data>
+  <data name="LocaleNotice" xml:space="preserve"><value>Appliqué immédiatement et enregistré sur cet appareil. Enregistrez vos modifications : les formulaires ouverts seront fermés. Les noms, adresses, descriptions et visites privées restent inchangés.</value></data>
+  <data name="LocalePreview" xml:space="preserve"><value>Format de l’heure : {0}</value></data>
+  <data name="Map" xml:space="preserve"><value>Carte</value></data>
+  <data name="MapHeading" xml:space="preserve"><value>Le voisinage de démonstration</value></data>
+  <data name="MapAccessibility" xml:space="preserve"><value>Carte des maisons du voisinage de démonstration</value></data>
+  <data name="MapBanner" xml:space="preserve"><value>DÉMO · Lieux publics sans hôtes participants · Friandises et heures simulées</value></data>
+  <data name="MapLoading" xml:space="preserve"><value>Recherche des arrêts démo sur la carte…</value></data>
+  <data name="MapSummary" xml:space="preserve"><value>Arrêts sur la carte : {0} · Accueillent en ce moment : {1}</value></data>
+  <data name="MapMissing" xml:space="preserve"><value> · Adresses introuvables : {0}</value></data>
+  <data name="AddressTooLong" xml:space="preserve"><value>Limitez l’adresse à 120 caractères.</value></data>
+  <data name="DescriptionRequired" xml:space="preserve"><value>Ajoutez une courte description pour les familles en visite.</value></data>
+  <data name="DescriptionTooLong" xml:space="preserve"><value>Limitez la description à 500 caractères.</value></data>
+  <data name="HoursMustDiffer" xml:space="preserve"><value>Les heures d’ouverture et de fermeture doivent être différentes.</value></data>
+  <data name="InvalidHouseOptions" xml:space="preserve"><value>Choisissez un niveau de frayeur et un statut valides.</value></data>
+  <data name="InvalidHouseId" xml:space="preserve"><value>La maison doit avoir un identifiant valide.</value></data>
+  <data name="DemoAddress" xml:space="preserve"><value>{0}, allée Imaginaire</value></data>
+  <data name="DemoName0" xml:space="preserve"><value>Le perron aux citrouilles</value></data>
+  <data name="DemoName1" xml:space="preserve"><value>Le chalet au clair de lune</value></data>
+  <data name="DemoName2" xml:space="preserve"><value>Le gentil fantôme</value></data>
+  <data name="DemoName3" xml:space="preserve"><value>Le coin des toiles d’araignée</value></data>
+  <data name="DemoName4" xml:space="preserve"><value>Le repaire des petits monstres</value></data>
+  <data name="DemoName5" xml:space="preserve"><value>La cuisine de la sorcière</value></data>
+  <data name="DemoName6" xml:space="preserve"><value>Le belvédère aux lanternes</value></data>
+  <data name="DemoName7" xml:space="preserve"><value>Le grenier des chauves-souris</value></data>
+  <data name="DemoName8" xml:space="preserve"><value>La maison aux crânes en sucre</value></data>
+  <data name="DemoName9" xml:space="preserve"><value>La dernière citrouille</value></data>
+  <data name="DemoDescription0" xml:space="preserve"><value>Suivez les citrouilles souriantes jusqu’au perron. Des sacs de friandises en papier et un accueil chaleureux vous attendent.</value></data>
+  <data name="DemoDescription1" xml:space="preserve"><value>Un arrêt calme avec des lanternes lumineuses, sans lumières clignotantes, et plein de joyeuses citrouilles.</value></data>
+  <data name="DemoDescription2" xml:space="preserve"><value>Nos fantômes sont faits de draps et leurs petites frayeurs sont facultatives. Les tout-petits sont les bienvenus !</value></data>
+  <data name="DemoDescription3" xml:space="preserve"><value>Une entrée couverte de toiles d’araignée et une barrière qui grince. Les plus braves pourront rencontrer notre araignée en carton.</value></data>
+  <data name="DemoDescription4" xml:space="preserve"><value>Une fête de gentils monstres pour les plus petits. Les costumes sont encouragés, mais jamais obligatoires.</value></data>
+  <data name="DemoDescription5" xml:space="preserve"><value>Le chaudron bouillonne de potions imaginaires. Demandez une devinette d’Halloween à notre sorcière.</value></data>
+  <data name="DemoDescription6" xml:space="preserve"><value>Un sentier éclairé de lanternes mène à la porte. Une visite détendue avec des décorations, sans surprises soudaines.</value></data>
+  <data name="DemoDescription7" xml:space="preserve"><value>Chauves-souris, ombres et musique inquiétante. Cet arrêt plaira aux familles qui aiment les frissons.</value></data>
+  <data name="DemoDescription8" xml:space="preserve"><value>Des décorations en papier coloré et de gentils squelettes. Venez saluer le voisinage dans une ambiance festive.</value></data>
+  <data name="DemoDescription9" xml:space="preserve"><value>Les citrouilles se reposent pour la soirée. Admirez les décorations depuis le sentier.</value></data>
+</root>

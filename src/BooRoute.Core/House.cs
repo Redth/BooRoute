@@ -1,3 +1,5 @@
+using BooRoute.Core.Localization;
+
 namespace BooRoute.Core;
 
 public enum HouseStatus { LightsOn, OutOfTreats, Closed }
@@ -28,25 +30,26 @@ public sealed record House(
 
     public IReadOnlyList<string> Validate()
     {
+        var text = AppText.Default.Strings;
         var errors = new List<string>();
         if (string.IsNullOrWhiteSpace(Nickname))
-            errors.Add("Give your house a nickname.");
+            errors.Add(text.NicknameRequired);
         else if (Nickname.Length > 60)
-            errors.Add("Keep the nickname to 60 characters.");
+            errors.Add(text.NicknameTooLong);
         if (string.IsNullOrWhiteSpace(Address))
-            errors.Add("Enter a fictional address.");
+            errors.Add(text.AddressRequired);
         else if (Address.Length > 120)
-            errors.Add("Keep the address to 120 characters.");
+            errors.Add(text.AddressTooLong);
         if (string.IsNullOrWhiteSpace(Description))
-            errors.Add("Add a short description for visiting families.");
+            errors.Add(text.DescriptionRequired);
         else if (Description.Length > 500)
-            errors.Add("Keep the description to 500 characters.");
+            errors.Add(text.DescriptionTooLong);
         if (OpensAt == ClosesAt)
-            errors.Add("Opening and closing times must be different.");
+            errors.Add(text.HoursMustDiffer);
         if (!Enum.IsDefined(ScareLevel) || !Enum.IsDefined(Status))
-            errors.Add("Choose a valid scare level and house status.");
+            errors.Add(text.InvalidHouseOptions);
         if (Id == Guid.Empty)
-            errors.Add("The house needs a valid identifier.");
+            errors.Add(text.InvalidHouseId);
         return errors;
     }
 }

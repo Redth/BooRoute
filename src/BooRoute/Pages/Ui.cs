@@ -1,4 +1,5 @@
 using BooRoute.ViewModels;
+using BooRoute.Core.Localization;
 using Microsoft.Maui.Controls.Shapes;
 
 namespace BooRoute.Pages;
@@ -73,6 +74,7 @@ public static class Ui
             AutomationId = id,
             Command = command,
             FontSize = 16,
+            LineBreakMode = LineBreakMode.WordWrap,
             FontAttributes = FontAttributes.Bold,
             CornerRadius = 14,
             MinimumHeightRequest = 48,
@@ -91,8 +93,8 @@ public static class Ui
         return new VerticalStackLayout { Spacing = 4, Children = { errors, spinner } };
     }
 
-    public static View DemoBanner(string text = "DEMO · Public Cologne venues, not participating hosts · All Halloween details simulated") =>
-        Card(Text(text, 12, Mint), new Thickness(12, 10));
+    public static View DemoBanner(string? text = null) =>
+        Card(Text(text ?? AppText.Default.Strings.DemoBanner, 12, Mint), new Thickness(12, 10));
 
     public static View Toggle(string label, BindingBase binding, string id)
     {

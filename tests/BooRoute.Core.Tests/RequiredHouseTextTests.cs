@@ -25,7 +25,7 @@ public sealed class RequiredHouseTextTests
     {
         var house = Sample() with { Address = address };
 
-        Assert.Equal("Enter a fictional address.", Assert.Single(house.Validate()));
+        Assert.Equal("Enter a public venue or fictional address.", Assert.Single(house.Validate()));
     }
 
     [Theory]

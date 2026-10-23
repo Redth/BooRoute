@@ -13,6 +13,7 @@ public sealed class NeighborhoodPage : ContentPage
     public NeighborhoodPage(NeighborhoodViewModel viewModel)
     {
         this.viewModel = viewModel;
+        var text = viewModel.Text.Strings;
         BindingContext = viewModel;
         BackgroundColor = Ui.Midnight;
         // CollectionView has no SafeAreaEdges of its own: keep the list below the nav bar,
@@ -20,14 +21,14 @@ public sealed class NeighborhoodPage : ContentPage
         SafeAreaEdges = new(SafeAreaRegions.Container, SafeAreaRegions.Container, SafeAreaRegions.Container, SafeAreaRegions.None);
         Title = viewModel.Mode switch
         {
-            NeighborhoodMode.Host => "Demo host",
-            NeighborhoodMode.Visited => "My visits",
-            _ => "Explore"
+            NeighborhoodMode.Host => text.DemoHost,
+            NeighborhoodMode.Visited => text.MyVisits,
+            _ => text.Explore
         };
         var heading = viewModel.Mode switch
         {
-            NeighborhoodMode.Host => "Your porch, your rules.",
-            NeighborhoodMode.Visited => "A trail of good treats.",
+            NeighborhoodMode.Host => text.HostHeading,
+            NeighborhoodMode.Visited => text.VisitsHeading,
             _ => "BooRoute"
         };
         var headingArt = viewModel.Mode switch
@@ -38,9 +39,9 @@ public sealed class NeighborhoodPage : ContentPage
         };
         var subtitle = viewModel.Mode switch
         {
-            NeighborhoodMode.Host => "Demo hosting only. No accounts or verified ownership.",
-            NeighborhoodMode.Visited => "Your visits stay on this device. Nobody else sees them.",
-            _ => "Explore demo stops around Microsoft Cologne."
+            NeighborhoodMode.Host => text.HostSubtitle,
+            NeighborhoodMode.Visited => text.VisitsSubtitle,
+            _ => text.ExploreSubtitle
         };
         var header = new VerticalStackLayout
         {
@@ -50,21 +51,21 @@ public sealed class NeighborhoodPage : ContentPage
         };
         if (viewModel.Mode == NeighborhoodMode.Explore)
         {
-            header.Add(Ui.Toggle("Welcoming visitors now",
+            header.Add(Ui.Toggle(text.WelcomingOnly,
                 Binding.Create(static (NeighborhoodViewModel model) => model.WelcomingOnly), "WelcomingOnlySwitch"));
-            header.Add(Ui.Toggle("Quiet visits only",
+            header.Add(Ui.Toggle(text.QuietOnly,
                 Binding.Create(static (NeighborhoodViewModel model) => model.QuietOnly), "QuietOnlySwitch"));
-            header.Add(Ui.Picker("Scare level",
+            header.Add(Ui.Picker(text.ScareLevel,
                 Binding.Create(static (NeighborhoodViewModel model) => model.ScareOptions),
                 Binding.Create(static (NeighborhoodViewModel model) => model.ScareIndex), "ScareFilterPicker"));
         }
         if (viewModel.Mode == NeighborhoodMode.Host)
-            header.Add(Ui.Button("+ Register a demo house", "AddHouseButton", viewModel.AddHouseCommand));
+            header.Add(Ui.Button(text.RegisterHouse, "AddHouseButton", viewModel.AddHouseCommand));
         var summary = Ui.Bound(Binding.Create(static (NeighborhoodViewModel model) => model.Summary), 14, Ui.Muted);
         summary.AutomationId = "HouseCountLabel";
         header.Add(summary);
         header.Add(Ui.Errors());
-        header.Add(Ui.Button("Refresh neighborhood", "RefreshButton", viewModel.RefreshCommand, secondary: true));
+        header.Add(Ui.Button(text.RefreshNeighbourhood, "RefreshButton", viewModel.RefreshCommand, secondary: true));
 
         var layout = new GridItemsLayout(1, ItemsLayoutOrientation.Vertical)
         {
@@ -85,10 +86,10 @@ public sealed class NeighborhoodPage : ContentPage
                 Spacing = 12,
                 Children =
                 {
-                    Ui.Text("No houses here… yet.", 24, bold: true),
+                    Ui.Text(text.EmptyHeading, 24, bold: true),
                     Ui.Text(viewModel.Mode == NeighborhoodMode.Visited
-                        ? "Open a house in Explore and mark it as visited."
-                        : "Try a different filter or register a demo house.", 16, Ui.Muted)
+                        ? text.EmptyVisits
+                        : text.EmptyHouses, 16, Ui.Muted)
                 }
             },
             ItemTemplate = new DataTemplate(() => BuildHouseCard(viewModel))
@@ -120,13 +121,15 @@ public sealed class NeighborhoodPage : ContentPage
         var art = Ui.Art(null, 36);
         art.SetBinding(Image.SourceProperty, static (HouseCard card) => card.ScareArt, converter: ArtConverter);
         top.Add(art, 1);
-        var button = Ui.Button(viewModel.Mode == NeighborhoodMode.Host ? "Edit house & status" : "Visit details",
+        var button = Ui.Button(viewModel.Mode == NeighborhoodMode.Host
+                ? viewModel.Text.Strings.EditHouse : viewModel.Text.Strings.VisitDetails,
             "OpenHouseButton", viewModel.OpenHouseCommand, secondary: true);
         button.BackgroundColor = Color.FromArgb("#3A2B4F");
         button.SetBinding(Button.CommandParameterProperty, static (HouseCard card) => card);
-        button.SetBinding(SemanticProperties.DescriptionProperty,
-            static (HouseCard card) => card.Nickname,
-            stringFormat: viewModel.Mode == NeighborhoodMode.Host ? "Edit {0}" : "View {0}");
+        if (viewModel.Mode == NeighborhoodMode.Host)
+            button.SetBinding(SemanticProperties.DescriptionProperty, static (HouseCard card) => card.EditDescription);
+        else
+            button.SetBinding(SemanticProperties.DescriptionProperty, static (HouseCard card) => card.ViewDescription);
         var address = Ui.Text(size: 14, color: Ui.Muted);
         address.SetBinding(Label.TextProperty, static (HouseCard card) => card.Address);
         var hours = Ui.Text(size: 15);
@@ -175,7 +178,9 @@ public sealed class NeighborhoodPage : ContentPage
 
     protected override void OnDisappearing()
     {
-        timer.Stop();
+        StopUpdates();
         base.OnDisappearing();
     }
+
+    public void StopUpdates() => timer.Stop();
 }
