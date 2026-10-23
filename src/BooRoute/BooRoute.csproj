@@ -22,6 +22,9 @@
 		<Nullable>enable</Nullable>
 		<NeutralLanguage>en</NeutralLanguage>
 
+		<!-- Android NativeAOT is intentionally enabled for this demo despite its experimental status. -->
+		<NoWarn Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">$(NoWarn);XA1040</NoWarn>
+
 
 
 		<!-- Display name -->

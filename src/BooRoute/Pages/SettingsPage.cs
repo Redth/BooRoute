@@ -28,7 +28,9 @@ public sealed class SettingsPage : ContentPage
                 {
                     heading,
                     Ui.Text(strings.Locale, 18, bold: true),
-                    Ui.Picker(strings.Locale, nameof(viewModel.Options), nameof(viewModel.SelectedIndex), "LocalePicker"),
+                    Ui.Picker(strings.Locale,
+                        Binding.Create(static (SettingsViewModel model) => model.Options),
+                        Binding.Create(static (SettingsViewModel model) => model.SelectedIndex), "LocalePicker"),
                     preview,
                     Ui.Text(strings.LocaleNotice, 15, Ui.Muted),
                     Ui.Errors(),
@@ -38,7 +40,7 @@ public sealed class SettingsPage : ContentPage
         };
     }
 
-    private sealed class SettingsViewModel : ViewModelBase
+    internal sealed class SettingsViewModel : ViewModelBase
     {
         private int selectedIndex;
         public string[] Options { get; }
