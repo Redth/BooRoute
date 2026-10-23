@@ -46,6 +46,12 @@ version check; it does not guarantee compatibility with other Xcode versions.
 The Mac app uses MAUI's scene lifecycle, as required by the Xcode 27 SDK, while
 retaining a single window.
 
+## PR review demo
+
+The [GPT-only inline review workflow](docs/demo-review.md) provides small,
+nonblocking demo comments on PRs, with an explicitly non-AI fallback when needed.
+It is a presentation aid, not a correctness or security gate.
+
 ## Try the demo
 
 1. Browse **Explore**, turn on **Welcoming visitors now**, and try scare-level or quiet-visit filters.
