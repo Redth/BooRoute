@@ -258,14 +258,47 @@ public sealed class HostEditorViewModel : ViewModelBase
     }
 }
 
+public sealed record MapHouse(HouseCard Card, double Latitude, double Longitude);
+
+/// <summary>Turns house addresses into map positions with the platform geocoder and caches the results.</summary>
+public sealed class HouseLocator(ILogger<HouseLocator> logger)
+{
+    private readonly Dictionary<string, (double Latitude, double Longitude)?> cache = new(StringComparer.OrdinalIgnoreCase);
+
+    public async Task<(double Latitude, double Longitude)?> LocateAsync(string address)
+    {
+        var key = address.Trim();
+        if (cache.TryGetValue(key, out var cached))
+            return cached;
+
+        (double Latitude, double Longitude)? result = null;
+        try
+        {
+            var location = (await Geocoding.Default.GetLocationsAsync(key))?.FirstOrDefault();
+            if (location is not null)
+                result = (location.Latitude, location.Longitude);
+        }
+        catch (Exception error) when (error is FeatureNotSupportedException or FeatureNotEnabledException or
+                                      PermissionException or InvalidOperationException or IOException or
+                                      HttpRequestException or TaskCanceledException)
+        {
+            logger.LogWarning(error, "Could not geocode a house address");
+            return null; // Don't cache failures; the network may be back on the next refresh.
+        }
+        cache[key] = result;
+        return result;
+    }
+}
+
 public sealed class MapViewModel : ViewModelBase
 {
     private readonly INeighborhoodBackend backend;
     private readonly TimeProvider clock;
     private readonly ILoggerFactory logging;
-    private string summary = "Loading the demo neighborhood…";
+    private readonly HouseLocator locator;
+    private string summary = "Finding the demo stops on the map…";
 
-    public IReadOnlyList<HouseCard> Houses { get; private set; } = [];
+    public IReadOnlyList<MapHouse> Houses { get; private set; } = [];
     public string Summary { get => summary; private set => Set(ref summary, value); }
     public event EventHandler? HousesChanged;
 
@@ -274,6 +307,7 @@ public sealed class MapViewModel : ViewModelBase
         this.backend = backend;
         this.clock = clock;
         this.logging = logging;
+        locator = new HouseLocator(logging.CreateLogger<HouseLocator>());
         backend.Changed += (_, _) => MainThread.BeginInvokeOnMainThread(() => _ = RefreshAsync());
     }
 
@@ -281,12 +315,24 @@ public sealed class MapViewModel : ViewModelBase
     {
         var snapshot = await backend.GetSnapshotAsync();
         var now = clock.GetLocalNow();
-        Houses = snapshot.Houses
+        var cards = snapshot.Houses
             .OrderBy(house => house.Nickname)
             .Select(house => new HouseCard(house, snapshot.Visited.Contains(house.Id), now))
             .ToList();
-        Summary = $"{Houses.Count} {(Houses.Count == 1 ? "house" : "houses")} · " +
-                  $"{Houses.Count(card => card.House.IsWelcoming(now))} welcoming now";
+
+        var located = new List<(HouseCard Card, (double Latitude, double Longitude) Position)>();
+        foreach (var card in cards)
+        {
+            if (await locator.LocateAsync(card.Address) is { } position)
+                located.Add((card, position));
+        }
+        var positions = DemoMap.SeparateDuplicates(located.Select(item => item.Position).ToList());
+        Houses = located.Select((item, index) => new MapHouse(item.Card, positions[index].Latitude, positions[index].Longitude)).ToList();
+
+        var missing = cards.Count - Houses.Count;
+        Summary = $"{Houses.Count} {(Houses.Count == 1 ? "stop" : "stops")} on the map · " +
+                  $"{Houses.Count(house => house.Card.IsWelcoming)} welcoming now" +
+                  (missing > 0 ? $" · {missing} address{(missing == 1 ? "" : "es")} not found" : "");
         HousesChanged?.Invoke(this, EventArgs.Empty);
     });
 
