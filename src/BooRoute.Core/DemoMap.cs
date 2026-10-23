@@ -1,29 +1,43 @@
 namespace BooRoute.Core;
 
 /// <summary>
-/// Places the fictional demo houses on the map.
-/// Addresses in BooRoute are made up and cannot be geocoded, so every house gets a
-/// stable, made-up position derived from its id. All positions fall inside a public
-/// park (Berlin's Tiergarten), so no pin ever points at a real home.
+/// Map settings for the demo neighborhood. Pins are placed by geocoding each house's
+/// address in the app; this class only holds the platform-independent parts.
 /// </summary>
 public static class DemoMap
 {
-    public const double CenterLatitude = 52.5140;
-    public const double CenterLongitude = 13.3500;
+    // Microsoft Cologne, Holzmarkt 2a, where the seeded venues are clustered.
+    public const double CenterLatitude = 50.9289;
+    public const double CenterLongitude = 6.9636;
+    public const double InitialRadiusMeters = 1400;
 
-    // Roughly ±400 m north/south and ±450 m east/west around the center.
-    public const double LatitudeSpread = 0.0036;
-    public const double LongitudeSpread = 0.0066;
+    // About 15 m, enough to tell two pins at the same entrance apart.
+    public const double DuplicateOffsetDegrees = 0.00014;
 
-    public static (double Latitude, double Longitude) LocationFor(House house) => LocationFor(house.Id);
-
-    public static (double Latitude, double Longitude) LocationFor(Guid id)
+    /// <summary>
+    /// Nudges positions that share the same coordinates (for example two museums
+    /// with one entrance address) into a small circle so every pin stays tappable.
+    /// The first occurrence keeps its exact position.
+    /// </summary>
+    public static IReadOnlyList<(double Latitude, double Longitude)> SeparateDuplicates(
+        IReadOnlyList<(double Latitude, double Longitude)> positions)
     {
-        Span<byte> bytes = stackalloc byte[16];
-        id.TryWriteBytes(bytes);
-        var x = BitConverter.ToUInt32(bytes[..4]) / (double)uint.MaxValue;
-        var y = BitConverter.ToUInt32(bytes[4..8]) / (double)uint.MaxValue;
-        return (CenterLatitude + (y * 2 - 1) * LatitudeSpread,
-                CenterLongitude + (x * 2 - 1) * LongitudeSpread);
+        var result = new List<(double Latitude, double Longitude)>(positions.Count);
+        var seen = new Dictionary<(double, double), int>();
+        foreach (var position in positions)
+        {
+            var key = (Math.Round(position.Latitude, 6), Math.Round(position.Longitude, 6));
+            seen.TryGetValue(key, out var count);
+            seen[key] = count + 1;
+            if (count == 0)
+            {
+                result.Add(position);
+                continue;
+            }
+            var angle = count * Math.PI / 3;
+            result.Add((position.Latitude + Math.Sin(angle) * DuplicateOffsetDegrees,
+                        position.Longitude + Math.Cos(angle) * DuplicateOffsetDegrees * 1.6));
+        }
+        return result;
     }
 }

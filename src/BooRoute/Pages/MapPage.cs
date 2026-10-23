@@ -20,7 +20,7 @@ public sealed class MapPage : ContentPage
         Title = "Map";
 
         map = new Map(MapSpan.FromCenterAndRadius(
-            new Location(DemoMap.CenterLatitude, DemoMap.CenterLongitude), Distance.FromMeters(700)))
+            new Location(DemoMap.CenterLatitude, DemoMap.CenterLongitude), Distance.FromMeters(DemoMap.InitialRadiusMeters)))
         {
             AutomationId = "NeighborhoodMap",
             MapType = MapType.Street,
@@ -37,7 +37,7 @@ public sealed class MapPage : ContentPage
             Children =
             {
                 Ui.Text("🗺️ The demo neighborhood", 26, bold: true),
-                Ui.DemoBanner("DEMO · Fictional houses · Pins are made-up spots in a park"),
+                Ui.DemoBanner("DEMO · Real public venues · Treats and hours are simulated"),
                 summary,
                 Ui.Errors()
             }
@@ -54,9 +54,8 @@ public sealed class MapPage : ContentPage
     private void UpdatePins()
     {
         map.Pins.Clear();
-        foreach (var card in viewModel.Houses)
+        foreach (var (card, latitude, longitude) in viewModel.Houses)
         {
-            var (latitude, longitude) = DemoMap.LocationFor(card.House);
             var pin = new Pin
             {
                 Label = $"{card.Emoji} {card.Nickname}",

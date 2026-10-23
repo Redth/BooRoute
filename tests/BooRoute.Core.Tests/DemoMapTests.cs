@@ -3,30 +3,24 @@ namespace BooRoute.Core.Tests;
 public sealed class DemoMapTests
 {
     [Fact]
-    public void SameHouseAlwaysGetsTheSameLocation()
+    public void UniquePositionsAreUnchanged()
     {
-        var id = Guid.NewGuid();
-        Assert.Equal(DemoMap.LocationFor(id), DemoMap.LocationFor(id));
+        (double, double)[] positions = [(50.93, 6.96), (50.92, 6.97)];
+        Assert.Equal(positions, DemoMap.SeparateDuplicates(positions));
     }
 
     [Fact]
-    public void LocationsStayInsideTheDemoArea()
+    public void SharedPositionsAreNudgedApartButStayClose()
     {
-        for (var i = 0; i < 1000; i++)
+        (double, double)[] positions = [(50.9334, 6.9548), (50.9334, 6.9548), (50.9334, 6.9548)];
+        var separated = DemoMap.SeparateDuplicates(positions);
+
+        Assert.Equal(positions[0], separated[0]);
+        Assert.Equal(3, separated.Distinct().Count());
+        Assert.All(separated, position =>
         {
-            var (latitude, longitude) = DemoMap.LocationFor(Guid.NewGuid());
-            Assert.InRange(latitude, DemoMap.CenterLatitude - DemoMap.LatitudeSpread,
-                DemoMap.CenterLatitude + DemoMap.LatitudeSpread);
-            Assert.InRange(longitude, DemoMap.CenterLongitude - DemoMap.LongitudeSpread,
-                DemoMap.CenterLongitude + DemoMap.LongitudeSpread);
-        }
-    }
-
-    [Fact]
-    public void SeededHousesGetDistinctLocations()
-    {
-        var houses = DemoSeed.Create(new DateTimeOffset(2026, 10, 31, 18, 0, 0, TimeSpan.Zero)).Houses;
-        var locations = houses.Select(DemoMap.LocationFor).ToList();
-        Assert.Equal(houses.Count, locations.Distinct().Count());
+            Assert.InRange(position.Latitude, 50.9334 - 0.001, 50.9334 + 0.001);
+            Assert.InRange(position.Longitude, 6.9548 - 0.001, 6.9548 + 0.001);
+        });
     }
 }
