@@ -16,7 +16,7 @@ public sealed class HostEditorPage : ContentPage
             Spacing = 14,
             Children =
             {
-                Ui.Text("🏠 " + viewModel.Heading, 29, bold: true),
+                Ui.Heading("heading_host.png", viewModel.Heading),
                 Ui.DemoBanner("DEMO HOST · Public venues or fictional addresses only · No private homes · Not real registration"),
                 Ui.Text("House nickname", 15, bold: true),
                 Entry("Nickname", "e.g. The Pumpkin Porch", "NicknameEntry", 60),
