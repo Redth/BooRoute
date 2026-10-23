@@ -5,6 +5,7 @@ namespace BooRoute.Pages;
 public sealed class HouseDetailsPage : ContentPage
 {
     private readonly HouseDetailsViewModel viewModel;
+    private readonly CandyConfettiView confetti = new();
 
     public HouseDetailsPage(HouseDetailsViewModel viewModel)
     {
@@ -22,7 +23,7 @@ public sealed class HouseDetailsPage : ContentPage
         var name = Ui.Text(house.Nickname, 32, bold: true);
         name.AutomationId = "HouseNicknameLabel";
         SemanticProperties.SetHeadingLevel(name, SemanticHeadingLevel.Level1);
-        Content = new ScrollView
+        var details = new ScrollView
         {
             Content = new VerticalStackLayout
             {
@@ -50,11 +51,22 @@ public sealed class HouseDetailsPage : ContentPage
                 }
             }
         };
+        Content = new Grid { Children = { details, confetti } };
     }
 
     protected override async void OnAppearing()
     {
         base.OnAppearing();
+        viewModel.VisitMarked += OnVisitMarked;
         await viewModel.LoadAsync();
     }
+
+    protected override void OnDisappearing()
+    {
+        viewModel.VisitMarked -= OnVisitMarked;
+        confetti.Stop();
+        base.OnDisappearing();
+    }
+
+    private void OnVisitMarked(object? sender, EventArgs e) => confetti.Burst();
 }
