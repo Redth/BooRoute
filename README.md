@@ -73,6 +73,15 @@ retaining a single window.
 while the installed iOS workload expects 27.0. This bypasses only the version check;
 the mismatched toolchain remains unsupported and other build errors may still occur.
 
+## App artwork
+
+The app icon and native launch splash share the supplied MAUI DAY artwork in
+`src/BooRoute/Resources/Splash/maui_day.png`. The original opaque PNG is retained
+without cropping, recoloring, or changing its lettering. `MauiIcon` places it over
+a dark background, with an Android-only foreground scale of `0.6` to keep the wide
+lettering inside adaptive-icon masks. `MauiSplashScreen` resizes it proportionally
+to a 192-by-192 logical-pixel base size on the same dark background. There is no
+separate in-app image logo.
 ## MAUI DevFlow
 
 Debug builds include [MAUI DevFlow](https://github.com/dotnet/maui-labs/tree/main/src/DevFlow)
