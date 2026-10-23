@@ -10,7 +10,6 @@ public sealed class HostEditorPage : ContentPage
         Title = "Demo house";
         BackgroundColor = Ui.Midnight;
         HideSoftInputOnTapped = true;
-        SafeAreaEdges = SafeAreaEdges.Container;
         var fields = new VerticalStackLayout
         {
             Padding = 24,

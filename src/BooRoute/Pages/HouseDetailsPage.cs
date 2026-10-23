@@ -13,7 +13,6 @@ public sealed class HouseDetailsPage : ContentPage
         BindingContext = viewModel;
         Title = "House details";
         BackgroundColor = Ui.Midnight;
-        SafeAreaEdges = SafeAreaEdges.Container;
         var house = viewModel.House;
         var card = viewModel.Card;
         var visit = Ui.Button("", "ToggleVisitedButton", viewModel.ToggleVisitedCommand);
