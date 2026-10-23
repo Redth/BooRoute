@@ -267,3 +267,39 @@ public sealed class HostEditorViewModel : ViewModelBase
         }));
     }
 }
+
+public sealed class MapViewModel : ViewModelBase
+{
+    private readonly INeighborhoodBackend backend;
+    private readonly TimeProvider clock;
+    private readonly ILoggerFactory logging;
+    private string summary = "Loading the demo neighborhood…";
+
+    public IReadOnlyList<HouseCard> Houses { get; private set; } = [];
+    public string Summary { get => summary; private set => Set(ref summary, value); }
+    public event EventHandler? HousesChanged;
+
+    public MapViewModel(INeighborhoodBackend backend, TimeProvider clock, ILoggerFactory logging) : base(logging)
+    {
+        this.backend = backend;
+        this.clock = clock;
+        this.logging = logging;
+        backend.Changed += (_, _) => MainThread.BeginInvokeOnMainThread(() => _ = RefreshAsync());
+    }
+
+    public Task RefreshAsync() => RunAsync(async () =>
+    {
+        var snapshot = await backend.GetSnapshotAsync();
+        var now = clock.GetLocalNow();
+        Houses = snapshot.Houses
+            .OrderBy(house => house.Nickname)
+            .Select(house => new HouseCard(house, snapshot.Visited.Contains(house.Id), now))
+            .ToList();
+        Summary = $"{Houses.Count} {(Houses.Count == 1 ? "house" : "houses")} · " +
+                  $"{Houses.Count(card => card.House.IsWelcoming(now))} welcoming now";
+        HousesChanged?.Invoke(this, EventArgs.Empty);
+    });
+
+    public Task OpenHouseAsync(House house) => RunAsync(() =>
+        Shell.Current.Navigation.PushAsync(new HouseDetailsPage(new(backend, clock, logging, house))));
+}

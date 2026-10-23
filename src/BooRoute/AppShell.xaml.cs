@@ -8,6 +8,7 @@ namespace BooRoute;
 public partial class AppShell : Shell
 {
     private readonly List<NeighborhoodViewModel> viewModels = [];
+    private readonly MapViewModel? mapViewModel;
 
     public AppShell(INeighborhoodBackend backend, TimeProvider clock, ILoggerFactory logging)
     {
@@ -22,6 +23,14 @@ public partial class AppShell : Shell
             tab.Items.Add(new ShellContent { Title = page.Title, Content = page });
             tabs.Items.Add(tab);
         }
+#if !WINDOWS
+        // .NET MAUI Maps has no Windows implementation.
+        mapViewModel = new MapViewModel(backend, clock, logging);
+        var mapPage = new MapPage(mapViewModel);
+        var mapTab = new Tab { Title = mapPage.Title, Route = "map" };
+        mapTab.Items.Add(new ShellContent { Title = mapPage.Title, Content = mapPage });
+        tabs.Items.Insert(1, mapTab);
+#endif
         Items.Add(tabs);
     }
 
@@ -29,5 +38,7 @@ public partial class AppShell : Shell
     {
         foreach (var viewModel in viewModels)
             await viewModel.RefreshAsync();
+        if (mapViewModel is not null)
+            await mapViewModel.RefreshAsync();
     }
 }

@@ -31,7 +31,11 @@ xcrun simctl install booted src/BooRoute/bin/Debug/net11.0-ios/iossimulator-arm6
 xcrun simctl launch booted com.stephanedelcroix.booroute
 ```
 
-For Android, build with `-f net11.0-android`.
+For Android, build with `-f net11.0-android`. The **Map** tab uses Google Maps on
+Android, so replace `YOUR_GOOGLE_MAPS_API_KEY` in
+`src/BooRoute/Platforms/Android/AndroidManifest.xml` with your own key
+([setup guide](https://learn.microsoft.com/dotnet/maui/user-interface/controls/map)).
+iOS and Mac Catalyst use Apple Maps and need no key. The Map tab is not available on Windows.
 
 For Mac Catalyst on Apple Silicon:
 
@@ -58,6 +62,9 @@ the mismatched toolchain remains unsupported and other build errors may still oc
 2. Open a house and mark it visited. Find it under **My visits**.
 3. Switch to **Demo host**, edit that house, and change its status to **Out of treats**.
 4. Return to Explore: it no longer appears under welcoming-only filtering.
+5. Open **Map** to see every demo house as a pin. Tap a pin's callout to open its details.
+   The addresses are fictional, so pins are placed at stable, made-up spots inside a
+   public park (Berlin's Tiergarten) and never point at a real home.
 5. Register another fictional house. Restart the app to see that houses and visits persist.
 
 Ten houses are seeded on first use. Their initial daily welcoming windows are
