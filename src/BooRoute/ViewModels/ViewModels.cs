@@ -174,6 +174,7 @@ public sealed class HouseDetailsViewModel : ViewModelBase
     public HouseCard Card { get; }
     public string VisitButtonText => visited ? "✓ Visited — tap to undo" : "Mark as visited";
     public ICommand ToggleVisitedCommand { get; }
+    public event EventHandler? VisitMarked;
 
     public HouseDetailsViewModel(INeighborhoodBackend backend, TimeProvider clock,
         ILoggerFactory logging, House house) : base(logging)
@@ -185,6 +186,8 @@ public sealed class HouseDetailsViewModel : ViewModelBase
             await backend.SetVisitedAsync(House.Id, !visited);
             visited = !visited;
             Changed(nameof(VisitButtonText));
+            if (visited)
+                VisitMarked?.Invoke(this, EventArgs.Empty);
         }));
         Backend = backend;
     }

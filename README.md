@@ -31,7 +31,18 @@ xcrun simctl install booted src/BooRoute/bin/Debug/net11.0-ios/iossimulator-arm6
 xcrun simctl launch booted com.stephanedelcroix.booroute
 ```
 
-For Android, build with `-f net11.0-android`.
+For Android, deploy through the build target so fast-deployed managed assemblies
+are updated along with the APK, then cold-start the app:
+
+```sh
+dotnet build src/BooRoute/BooRoute.csproj -t:Run -f net11.0-android \
+  -p:AdbTarget="-s emulator-5554"
+adb -s emulator-5554 shell am force-stop com.stephanedelcroix.booroute
+adb -s emulator-5554 shell monkey -p com.stephanedelcroix.booroute 1
+```
+
+Replace `emulator-5554` with the serial from `adb devices`. Installing a Debug
+APK alone can leave older fast-deployed assemblies in use.
 
 For Mac Catalyst on Apple Silicon:
 
@@ -115,7 +126,9 @@ development builds and fictional demo data.
 ## Try the demo
 
 1. Browse **Explore**, turn on **Welcoming visitors now**, and try scare-level or quiet-visit filters.
-2. Open a house and mark it visited. Find it under **My visits**.
+2. Open a house and mark it visited for a short candy-confetti celebration, then
+   find it under **My visits**. Confetti only plays after a successful save, not
+   when undoing a visit, and respects the device's reduced-motion setting.
 3. Switch to **Demo host**, edit that house, and change its status to **Out of treats**.
 4. Return to Explore: it no longer appears under welcoming-only filtering.
 5. Register another fictional house. Restart the app to see that houses and visits persist.
