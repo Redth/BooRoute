@@ -29,7 +29,18 @@ xcrun simctl install booted src/BooRoute/bin/Debug/net11.0-ios/iossimulator-arm6
 xcrun simctl launch booted com.stephanedelcroix.booroute
 ```
 
-For Android, build with `-f net11.0-android`.
+For Android, deploy through the build target so fast-deployed managed assemblies
+are updated along with the APK, then cold-start the app:
+
+```sh
+dotnet build src/BooRoute/BooRoute.csproj -t:Run -f net11.0-android \
+  -p:AdbTarget="-s emulator-5554"
+adb -s emulator-5554 shell am force-stop com.stephanedelcroix.booroute
+adb -s emulator-5554 shell monkey -p com.stephanedelcroix.booroute 1
+```
+
+Replace `emulator-5554` with the serial from `adb devices`. Installing a Debug
+APK alone can leave older fast-deployed assemblies in use.
 
 For Mac Catalyst on Apple Silicon:
 
