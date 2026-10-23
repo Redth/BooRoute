@@ -12,7 +12,9 @@ public sealed class NeighborhoodPage : ContentPage
         this.viewModel = viewModel;
         BindingContext = viewModel;
         BackgroundColor = Ui.Midnight;
-        SafeAreaEdges = SafeAreaEdges.Container;
+        // CollectionView has no SafeAreaEdges of its own: keep the list below the nav bar,
+        // but let it run to the bottom edge so it scrolls behind the tab bar.
+        SafeAreaEdges = new(SafeAreaRegions.Container, SafeAreaRegions.Container, SafeAreaRegions.Container, SafeAreaRegions.None);
         Title = viewModel.Mode switch
         {
             NeighborhoodMode.Host => "Demo host",
