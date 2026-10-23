@@ -5,7 +5,7 @@ namespace BooRoute.Pages;
 public sealed class HouseDetailsPage : ContentPage
 {
     private readonly HouseDetailsViewModel viewModel;
-    private readonly CandyConfettiView confetti = new();
+    private readonly PumpkinConfettiView confetti = new();
 
     public HouseDetailsPage(HouseDetailsViewModel viewModel)
     {

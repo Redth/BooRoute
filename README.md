@@ -136,9 +136,9 @@ development builds and fictional demo data.
 ## Try the demo
 
 1. Browse **Explore**, turn on **Welcoming visitors now**, and try scare-level or quiet-visit filters.
-2. Open a house and mark it visited for a short candy-confetti celebration, then
-   find it under **My visits**. Confetti only plays after a successful save, not
-   when undoing a visit, and respects the device's reduced-motion setting.
+2. Open a house and mark it visited for a short pumpkin-confetti celebration, then
+   find it under **My visits**. The pumpkins only fly after a successful save, not
+   when undoing a visit, and respect the device's reduced-motion setting.
 3. Switch to **Demo host**, edit that house, and change its status to **Out of treats**.
 4. Return to Explore: it no longer appears under welcoming-only filtering.
 5. Open **Map** to see every demo house as a pin. Tap a pin's callout to open its details.
