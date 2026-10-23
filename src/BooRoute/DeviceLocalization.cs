@@ -14,7 +14,12 @@ internal static class DeviceLocalization
     private static (CultureInfo Culture, CultureInfo UICulture) ReadDeviceCultures()
     {
 #if ANDROID
-        var language = Android.App.Application.Context.Resources?.Configuration?.Locales?.Get(0)?.ToLanguageTag();
+        var resources = Platform.CurrentActivity?.Resources ?? Android.App.Application.Context.Resources;
+        var language = resources?.Configuration?.Locales?.Get(0)?.ToLanguageTag();
+        if (OperatingSystem.IsAndroidVersionAtLeast(33) &&
+            Android.App.Application.Context.GetSystemService(Android.Content.Context.LocaleService) is Android.App.LocaleManager manager &&
+            manager.ApplicationLocales is { IsEmpty: false } locales)
+            language = locales.Get(0)?.ToLanguageTag();
         var region = Java.Util.Locale.Default?.ToLanguageTag();
 #elif IOS || MACCATALYST
         var language = Foundation.NSBundle.MainBundle.PreferredLocalizations.FirstOrDefault();

@@ -30,8 +30,14 @@ public sealed class MapPage : LocalizedPage
         Localize(() =>
         {
             SemanticProperties.SetDescription(map, text.MapAccessibility);
-            for (var index = 0; index < map.Pins.Count && index < viewModel.Houses.Count; index++)
-                SetPinLabels(map.Pins[index], viewModel.Houses[index].Card);
+            foreach (var pin in map.Pins)
+            {
+                if (pin.BindingContext is HouseCard card)
+                {
+                    card.RefreshLocalization();
+                    SetPinLabels(pin, card);
+                }
+            }
         });
 
         var summary = Ui.Bound(Binding.Create(static (MapViewModel model) => model.Summary), 14, Ui.Muted);
@@ -71,6 +77,7 @@ public sealed class MapPage : LocalizedPage
         {
             var pin = new Pin
             {
+                BindingContext = card,
                 Location = new Location(latitude, longitude),
                 Type = PinType.Place
             };

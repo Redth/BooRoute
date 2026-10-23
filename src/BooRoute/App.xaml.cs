@@ -17,11 +17,8 @@ public partial class App : Application
     protected override Window CreateWindow(IActivationState? activationState)
     {
         var window = new Window(shell);
-        window.Resumed += async (_, _) =>
-        {
-            DeviceLocalization.Apply(localeSettings);
-            await shell.RefreshAsync();
-        };
+        window.Activated += (_, _) => DeviceLocalization.Apply(localeSettings);
+        window.Resumed += async (_, _) => await shell.RefreshAsync();
         return window;
     }
 }
