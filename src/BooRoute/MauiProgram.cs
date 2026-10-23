@@ -1,6 +1,10 @@
 ﻿using Microsoft.Extensions.Logging;
 using BooRoute.Core;
 
+#if DEBUG
+using Microsoft.Maui.DevFlow.Agent;
+#endif
+
 namespace BooRoute;
 
 public static class MauiProgram
@@ -27,6 +31,7 @@ public static class MauiProgram
 
 #if DEBUG
         builder.Logging.AddDebug();
+        builder.AddMauiDevFlowAgent();
 #endif
 
         return builder.Build();

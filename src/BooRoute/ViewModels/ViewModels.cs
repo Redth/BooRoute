@@ -1,4 +1,3 @@
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
@@ -74,29 +73,6 @@ public abstract class ViewModelBase(ILoggerFactory logging) : INotifyPropertyCha
     }
 }
 
-public sealed class HouseCard(House house, bool visited, DateTimeOffset localNow)
-{
-    public House House { get; } = house;
-    public string Nickname => House.Nickname;
-    public string Address => House.Address;
-    public string Emoji => House.ScareLevel == ScareLevel.Scary ? "🎃" : "🏠";
-    public string Hours => $"{House.OpensAt:HH:mm} – {House.ClosesAt:HH:mm}";
-    public string Status => House.Status switch
-    {
-        HouseStatus.OutOfTreats => "Out of treats",
-        HouseStatus.Closed => "Closed",
-        _ => House.IsWelcoming(localNow) ? "Lights on · Welcome!" : "Lights on · Outside hours"
-    };
-    public Color StatusColor => House.IsWelcoming(localNow) ? Ui.Mint : Ui.Muted;
-    public string Features => string.Join(" · ", new[]
-    {
-        House.ScareLevel.ToString(),
-        House.QuietVisits ? "Quiet visits" : null,
-        House.StepFreeAccess ? "Step-free" : null
-    }.Where(value => value is not null));
-    public string VisitStatus => visited ? "✓ Visited" : "";
-}
-
 public enum NeighborhoodMode { Explore, Visited, Host }
 
 public sealed class NeighborhoodViewModel : ViewModelBase
@@ -104,6 +80,7 @@ public sealed class NeighborhoodViewModel : ViewModelBase
     private readonly INeighborhoodBackend backend;
     private readonly TimeProvider clock;
     private readonly ILoggerFactory logging;
+    private readonly SemaphoreSlim refreshGate = new(1, 1);
     private NeighborhoodSnapshot? snapshot;
     private bool welcomingOnly;
     private bool quietOnly;
@@ -111,7 +88,7 @@ public sealed class NeighborhoodViewModel : ViewModelBase
     private string summary = "Meet your demo neighborhood";
 
     public NeighborhoodMode Mode { get; }
-    public ObservableCollection<HouseCard> Houses { get; } = [];
+    public HouseCardCollection Houses { get; } = [];
     public ICommand OpenHouseCommand { get; }
     public ICommand AddHouseCommand { get; }
     public ICommand RefreshCommand { get; }
@@ -155,11 +132,22 @@ public sealed class NeighborhoodViewModel : ViewModelBase
         backend.Changed += (_, _) => MainThread.BeginInvokeOnMainThread(() => _ = RefreshAsync());
     }
 
-    public Task RefreshAsync() => RunAsync(async () =>
+    public async Task RefreshAsync()
     {
-        snapshot = await backend.GetSnapshotAsync();
-        ApplyFilters();
-    });
+        await refreshGate.WaitAsync();
+        try
+        {
+            await RunAsync(async () =>
+            {
+                snapshot = await backend.GetSnapshotAsync();
+                ApplyFilters();
+            });
+        }
+        finally
+        {
+            refreshGate.Release();
+        }
+    }
 
     private void ApplyFilters()
     {
@@ -172,11 +160,10 @@ public sealed class NeighborhoodViewModel : ViewModelBase
             Mode == NeighborhoodMode.Explore ? scare : null,
             Mode == NeighborhoodMode.Explore && QuietOnly,
             Mode == NeighborhoodMode.Visited ? snapshot.Visited : null);
-        Houses.Clear();
-        foreach (var house in filtered.OrderByDescending(house => house.IsWelcoming(now)).ThenBy(house => house.Nickname))
-            Houses.Add(new(house, snapshot.Visited.Contains(house.Id), now));
+        Houses.Update(filtered.OrderByDescending(house => house.IsWelcoming(now)).ThenBy(house => house.Nickname),
+            snapshot.Visited, now);
         Summary = $"{Houses.Count} {(Houses.Count == 1 ? "house" : "houses")} · " +
-                  $"{Houses.Count(card => card.House.IsWelcoming(now))} welcoming now";
+                  $"{Houses.Count(card => card.IsWelcoming)} welcoming now";
     }
 }
 
@@ -187,6 +174,7 @@ public sealed class HouseDetailsViewModel : ViewModelBase
     public HouseCard Card { get; }
     public string VisitButtonText => visited ? "✓ Visited — tap to undo" : "Mark as visited";
     public ICommand ToggleVisitedCommand { get; }
+    public event EventHandler? VisitMarked;
 
     public HouseDetailsViewModel(INeighborhoodBackend backend, TimeProvider clock,
         ILoggerFactory logging, House house) : base(logging)
@@ -198,6 +186,8 @@ public sealed class HouseDetailsViewModel : ViewModelBase
             await backend.SetVisitedAsync(House.Id, !visited);
             visited = !visited;
             Changed(nameof(VisitButtonText));
+            if (visited)
+                VisitMarked?.Invoke(this, EventArgs.Empty);
         }));
         Backend = backend;
     }
