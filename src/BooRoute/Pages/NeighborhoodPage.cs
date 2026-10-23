@@ -43,13 +43,17 @@ public sealed class NeighborhoodPage : ContentPage
         };
         if (viewModel.Mode == NeighborhoodMode.Explore)
         {
-            header.Add(Ui.Toggle("Welcoming visitors now", nameof(viewModel.WelcomingOnly), "WelcomingOnlySwitch"));
-            header.Add(Ui.Toggle("Quiet visits only", nameof(viewModel.QuietOnly), "QuietOnlySwitch"));
-            header.Add(Ui.Picker("Scare level", nameof(viewModel.ScareOptions), nameof(viewModel.ScareIndex), "ScareFilterPicker"));
+            header.Add(Ui.Toggle("Welcoming visitors now",
+                Binding.Create(static (NeighborhoodViewModel model) => model.WelcomingOnly), "WelcomingOnlySwitch"));
+            header.Add(Ui.Toggle("Quiet visits only",
+                Binding.Create(static (NeighborhoodViewModel model) => model.QuietOnly), "QuietOnlySwitch"));
+            header.Add(Ui.Picker("Scare level",
+                Binding.Create(static (NeighborhoodViewModel model) => model.ScareOptions),
+                Binding.Create(static (NeighborhoodViewModel model) => model.ScareIndex), "ScareFilterPicker"));
         }
         if (viewModel.Mode == NeighborhoodMode.Host)
             header.Add(Ui.Button("+ Register a demo house", "AddHouseButton", viewModel.AddHouseCommand));
-        var summary = Ui.Bound(nameof(viewModel.Summary), 14, Ui.Muted);
+        var summary = Ui.Bound(Binding.Create(static (NeighborhoodViewModel model) => model.Summary), 14, Ui.Muted);
         summary.AutomationId = "HouseCountLabel";
         header.Add(summary);
         header.Add(Ui.Errors());
