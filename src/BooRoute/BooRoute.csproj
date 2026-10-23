@@ -17,6 +17,7 @@
 		<UseMaui>true</UseMaui>
 		<SingleProject>true</SingleProject>
 		<PublishAot>true</PublishAot>
+		<ValidateXcodeVersion>false</ValidateXcodeVersion>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 
