@@ -16,6 +16,7 @@
 		<RootNamespace>BooRoute</RootNamespace>
 		<UseMaui>true</UseMaui>
 		<SingleProject>true</SingleProject>
+		<ValidateXcodeVersion>false</ValidateXcodeVersion>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 

@@ -32,6 +32,10 @@ xcrun simctl launch booted com.stephanedelcroix.booroute
 For Android, build with `-f net11.0-android`; for Mac Catalyst use
 `-f net11.0-maccatalyst`. Those targets require their corresponding toolchains.
 
+`ValidateXcodeVersion` is set to `false` to allow the demo to build with Xcode 27.1
+while the installed iOS workload expects 27.0. This bypasses only the version check;
+the mismatched toolchain remains unsupported and other build errors may still occur.
+
 ## Try the demo
 
 1. Browse **Explore**, turn on **Welcoming visitors now**, and try scare-level or quiet-visit filters.
