@@ -131,11 +131,49 @@ atomic file replacement. Errors are displayed rather than replacing corrupt data
 with a fresh success-shaped dataset. To start over, uninstall and reinstall the
 app (this deletes its local demo data).
 
+## Adaptive entry collections
+
+Explore, My visits, and Demo host share a native-virtualized `CollectionView`.
+Following the [bespoke collections skill's scenario-selection guidance](https://github.com/dotnet/maui-labs/blob/redth-bespoke-collection-research/plugins/dotnet-maui/skills/maui-bespoke-collections/references/scenario-selection.md),
+this regular grid retains MAUI's existing platform handlers rather than adding
+a custom scrolling engine or handler registration.
+
+Columns follow the collection's available width, not the device model. Cards
+have a 320-DIP minimum width, 14-DIP column gaps, and 22-DIP outer insets. Narrow
+windows use one column; larger windows add columns as space permits, including
+after rotation or window resizing. Cards remain self-sized so wrapped names,
+addresses, visit indicators, and automatically scaled text are not clipped to
+the first card's height.
+
+Refreshes reconcile entries by house ID instead of clearing the list. Unchanged
+cards retain their identity and cached presentation strings; edits, filtering,
+visits, and welcoming-time transitions emit targeted collection changes.
+Overlapping refreshes are serialized. Item bindings use typed C# getters, and
+the collection remains the page's finite, directly hosted scrolling viewport.
+The mock backend still supplies a complete in-memory snapshot; this is not a
+paged data source.
+
+The portable regression suite verifies that an unchanged 10,000-house refresh
+emits **zero collection notifications** and retains every card instance. It also
+covers individual changes, reordering, empty sources, duplicate keys, and exact
+column breakpoints. These are update-work checks, not a scrolling FPS benchmark.
+
+The implementation builds for iOS, Mac Catalyst, and Android with the existing
+preview toolchain. Native behavior was checked on iOS 18.6 simulators: one column
+on iPhone, two columns on portrait iPad, three after landscape rotation, and
+details navigation plus visit updates on the intended grid entry. The installed
+iOS 27 simulator rejects the existing iOS scene-lifecycle configuration at
+startup; that separate migration is not part of this change. Mac Catalyst and
+Android runtime behavior, Windows, full disconnect/reconnect and focus testing,
+physical-device performance, allocation bounds, and frame/hitch measurements
+remain unverified.
+
 ## Structure
 
 - `src/BooRoute`: native MAUI pages, MVVM view models, and dependency injection.
 - `src/BooRoute.Core`: models, welcoming/filter rules, mock backend, and JSON persistence.
-- `tests/BooRoute.Core.Tests`: clock-controlled business-rule and persistence tests.
+- `tests/BooRoute.Core.Tests`: clock-controlled business-rule, persistence, and
+  portable entry-presentation/grid tests (linked from the app's actual source).
 - `docs/initial-prompt.txt`: the prompt used to start the build.
 
 ```sh
