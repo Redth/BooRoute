@@ -12,14 +12,13 @@ public sealed class HostEditorPage : ContentPage
         Title = text.DemoHouse;
         BackgroundColor = Ui.Midnight;
         HideSoftInputOnTapped = true;
-        SafeAreaEdges = SafeAreaEdges.Container;
         var fields = new VerticalStackLayout
         {
             Padding = 24,
             Spacing = 14,
             Children =
             {
-                Ui.Text("🏠 " + viewModel.Heading, 29, bold: true),
+                Ui.Heading("heading_host.png", viewModel.Heading),
                 Ui.DemoBanner(text.HostDemoBanner),
                 Ui.Text(text.HouseNickname, 15, bold: true),
                 Entry("Nickname", text.NicknamePlaceholder, text.HouseNickname, "NicknameEntry", 60),

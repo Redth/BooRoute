@@ -14,7 +14,6 @@ public sealed class HouseDetailsPage : ContentPage
         BindingContext = viewModel;
         Title = text.HouseDetails;
         BackgroundColor = Ui.Midnight;
-        SafeAreaEdges = SafeAreaEdges.Container;
         var house = viewModel.House;
         var card = viewModel.Card;
         var visit = Ui.Button("", "ToggleVisitedButton", viewModel.ToggleVisitedCommand);
@@ -32,7 +31,7 @@ public sealed class HouseDetailsPage : ContentPage
                 Spacing = 18,
                 Children =
                 {
-                    Ui.Text(card.Emoji, 72), name, Ui.Text(house.Address, 16, Ui.Muted),
+                    Ui.Art(card.ScareArt, 72), name, Ui.Text(house.Address, 16, Ui.Muted),
                     Ui.DemoBanner(text.FictionalDestination),
                     status, Ui.Text(text.DailyHoursDescriptionFormat(card.Hours), 17),
                     Ui.Text(house.Description, 18),

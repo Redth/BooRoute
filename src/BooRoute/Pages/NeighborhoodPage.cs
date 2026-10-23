@@ -8,6 +8,7 @@ public sealed class NeighborhoodPage : ContentPage
     private readonly NeighborhoodViewModel viewModel;
     private readonly IDispatcherTimer timer;
     private static readonly WelcomingColorConverter StatusColorConverter = new();
+    private static readonly ImageFileConverter ArtConverter = new();
 
     public NeighborhoodPage(NeighborhoodViewModel viewModel)
     {
@@ -15,7 +16,9 @@ public sealed class NeighborhoodPage : ContentPage
         var text = viewModel.Text.Strings;
         BindingContext = viewModel;
         BackgroundColor = Ui.Midnight;
-        SafeAreaEdges = SafeAreaEdges.Container;
+        // CollectionView has no SafeAreaEdges of its own: keep the list below the nav bar,
+        // but let it run to the bottom edge so it scrolls behind the tab bar.
+        SafeAreaEdges = new(SafeAreaRegions.Container, SafeAreaRegions.Container, SafeAreaRegions.Container, SafeAreaRegions.None);
         Title = viewModel.Mode switch
         {
             NeighborhoodMode.Host => text.DemoHost,
@@ -24,9 +27,15 @@ public sealed class NeighborhoodPage : ContentPage
         };
         var heading = viewModel.Mode switch
         {
-            NeighborhoodMode.Host => "🏠 " + text.HostHeading,
-            NeighborhoodMode.Visited => "🎃 " + text.VisitsHeading,
-            _ => "🎃 BooRoute"
+            NeighborhoodMode.Host => text.HostHeading,
+            NeighborhoodMode.Visited => text.VisitsHeading,
+            _ => "BooRoute"
+        };
+        var headingArt = viewModel.Mode switch
+        {
+            NeighborhoodMode.Host => "heading_host.png",
+            NeighborhoodMode.Visited => "heading_visits.png",
+            _ => "heading_explore.png"
         };
         var subtitle = viewModel.Mode switch
         {
@@ -38,7 +47,7 @@ public sealed class NeighborhoodPage : ContentPage
         {
             Spacing = 10,
             Margin = new Thickness(0, 12, 0, 10),
-            Children = { Ui.Text(heading, 29, bold: true), Ui.Text(subtitle, 14, Ui.Muted), Ui.DemoBanner() }
+            Children = { Ui.Heading(headingArt, heading), Ui.Text(subtitle, 14, Ui.Muted), Ui.DemoBanner() }
         };
         if (viewModel.Mode == NeighborhoodMode.Explore)
         {
@@ -105,9 +114,9 @@ public sealed class NeighborhoodPage : ContentPage
         nickname.SetBinding(Label.TextProperty, static (HouseCard card) => card.Nickname);
         SemanticProperties.SetHeadingLevel(nickname, SemanticHeadingLevel.Level2);
         top.Add(nickname);
-        var emoji = Ui.Text(size: 32);
-        emoji.SetBinding(Label.TextProperty, static (HouseCard card) => card.Emoji);
-        top.Add(emoji, 1);
+        var art = Ui.Art(null, 36);
+        art.SetBinding(Image.SourceProperty, static (HouseCard card) => card.ScareArt, converter: ArtConverter);
+        top.Add(art, 1);
         var button = Ui.Button(viewModel.Mode == NeighborhoodMode.Host
                 ? viewModel.Text.Strings.EditHouse : viewModel.Text.Strings.VisitDetails,
             "OpenHouseButton", viewModel.OpenHouseCommand, secondary: true);
@@ -142,6 +151,15 @@ public sealed class NeighborhoodPage : ContentPage
     {
         public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture) =>
             value is true ? Ui.Mint : Ui.Muted;
+
+        public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture) =>
+            throw new NotSupportedException();
+    }
+
+    private sealed class ImageFileConverter : IValueConverter
+    {
+        public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture) =>
+            value is string file ? ImageSource.FromFile(file) : null;
 
         public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture) =>
             throw new NotSupportedException();

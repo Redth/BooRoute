@@ -30,6 +30,34 @@ public static class Ui
         return label;
     }
 
+    // Decorative art. Nearby text always says the same thing, so screen readers skip it.
+    public static Image Art(ImageSource? source, double size)
+    {
+        var image = new Image
+        {
+            WidthRequest = size,
+            HeightRequest = size,
+            Aspect = Aspect.AspectFit,
+            HorizontalOptions = LayoutOptions.Start,
+            VerticalOptions = LayoutOptions.Center
+        };
+        if (source is not null)
+            image.Source = source;
+        AutomationProperties.SetIsInAccessibleTree(image, false);
+        return image;
+    }
+
+    public static View Heading(string art, string text, double size = 29)
+    {
+        var label = Text(text, size, bold: true);
+        label.VerticalOptions = LayoutOptions.Center;
+        SemanticProperties.SetHeadingLevel(label, SemanticHeadingLevel.Level1);
+        var grid = new Grid { ColumnDefinitions = [new(GridLength.Auto), new(GridLength.Star)], ColumnSpacing = 10 };
+        grid.Add(Art(art, size + 5));
+        grid.Add(label, 1);
+        return grid;
+    }
+
     public static Border Card(View content, Thickness? padding = null) => new()
     {
         BackgroundColor = Panel,

@@ -150,6 +150,12 @@ the app directory as a stdio server. No MCP connection is required for the CLI
 or skills. DevFlow can inspect and change app state; use it only with local
 development builds and fictional demo data.
 
+## PR review demo
+
+The [GPT-only inline review workflow](docs/demo-review.md) provides small,
+nonblocking demo comments on PRs, with an explicitly non-AI fallback when needed.
+It is a presentation aid, not a correctness or security gate.
+
 ## Try the demo
 
 1. Browse **Explore**, turn on **Welcoming visitors now**, and try scare-level or quiet-visit filters.
@@ -174,7 +180,9 @@ The foreground list refreshes every 30 seconds, on appearance, on resume, and
 after successful mock-backend changes.
 
 Data is saved to `neighborhood.json` in the app's private data directory using
-atomic file replacement. Errors are displayed rather than replacing corrupt data
+atomic file replacement. Both reads and writes use source-generated
+`System.Text.Json` metadata so persistence does not require reflection under NativeAOT.
+Errors are displayed rather than replacing corrupt data
 with a fresh success-shaped dataset. To start over, uninstall and reinstall the
 app (this deletes its local demo data).
 

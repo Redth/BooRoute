@@ -11,7 +11,7 @@ public sealed class HouseCard
     public bool IsWelcoming { get; }
     public string Nickname => House.Nickname;
     public string Address => House.Address;
-    public string Emoji { get; }
+    public string ScareArt { get; }
     public string Hours { get; }
     public string Status { get; }
     public string Features { get; }
@@ -27,7 +27,12 @@ public sealed class HouseCard
         House = house;
         Visited = visited;
         IsWelcoming = house.IsWelcoming(localNow);
-        Emoji = house.ScareLevel == ScareLevel.Scary ? "🎃" : "🏠";
+        ScareArt = house.ScareLevel switch
+        {
+            ScareLevel.Friendly => "scare_friendly.png",
+            ScareLevel.Spooky => "scare_spooky.png",
+            _ => "scare_scary.png"
+        };
         Hours = text.Hours(house.OpensAt, house.ClosesAt);
         Status = house.Status switch
         {
