@@ -1,3 +1,4 @@
+using System.Globalization;
 using BooRoute.ViewModels;
 
 namespace BooRoute.Pages;
@@ -6,6 +7,7 @@ public sealed class NeighborhoodPage : ContentPage
 {
     private readonly NeighborhoodViewModel viewModel;
     private readonly IDispatcherTimer timer;
+    private static readonly WelcomingColorConverter StatusColorConverter = new();
 
     public NeighborhoodPage(NeighborhoodViewModel viewModel)
     {
@@ -29,12 +31,12 @@ public sealed class NeighborhoodPage : ContentPage
         {
             NeighborhoodMode.Host => "Demo hosting only. No accounts or verified ownership.",
             NeighborhoodMode.Visited => "Your visits stay on this device. Nobody else sees them.",
-            _ => "Find the doors worth knocking on."
+            _ => "Explore demo stops around Microsoft Cologne."
         };
         var header = new VerticalStackLayout
         {
             Spacing = 10,
-            Margin = new Thickness(22, 12, 22, 10),
+            Margin = new Thickness(0, 12, 0, 10),
             Children = { Ui.Text(heading, 29, bold: true), Ui.Text(subtitle, 14, Ui.Muted), Ui.DemoBanner() }
         };
         if (viewModel.Mode == NeighborhoodMode.Explore)
@@ -51,11 +53,18 @@ public sealed class NeighborhoodPage : ContentPage
         header.Add(Ui.Errors());
         header.Add(Ui.Button("Refresh neighborhood", "RefreshButton", viewModel.RefreshCommand, secondary: true));
 
+        var layout = new GridItemsLayout(1, ItemsLayoutOrientation.Vertical)
+        {
+            HorizontalItemSpacing = HouseGridLayout.ColumnSpacing
+        };
         var collection = new CollectionView
         {
             AutomationId = "HousesCollection",
+            Margin = new Thickness(HouseGridLayout.PageInset, 0),
             SelectionMode = SelectionMode.None,
             Header = header,
+            ItemsLayout = layout,
+            ItemsUpdatingScrollMode = ItemsUpdatingScrollMode.KeepItemsInView,
             ItemSizingStrategy = ItemSizingStrategy.MeasureAllItems,
             EmptyView = new VerticalStackLayout
             {
@@ -71,7 +80,13 @@ public sealed class NeighborhoodPage : ContentPage
             },
             ItemTemplate = new DataTemplate(() => BuildHouseCard(viewModel))
         };
-        collection.SetBinding(ItemsView.ItemsSourceProperty, nameof(viewModel.Houses));
+        collection.SetBinding(ItemsView.ItemsSourceProperty, static (NeighborhoodViewModel model) => model.Houses);
+        collection.SizeChanged += (_, _) =>
+        {
+            var span = HouseGridLayout.GetSpan(collection.Width);
+            if (layout.Span != span)
+                layout.Span = span;
+        };
         Content = collection;
         timer = Dispatcher.CreateTimer();
         timer.Interval = TimeSpan.FromSeconds(30);
@@ -80,33 +95,53 @@ public sealed class NeighborhoodPage : ContentPage
 
     private static View BuildHouseCard(NeighborhoodViewModel viewModel)
     {
-        var status = Ui.Bound(nameof(HouseCard.Status), 14, bold: true);
-        status.SetBinding(Label.TextColorProperty, nameof(HouseCard.StatusColor));
+        var status = Ui.Text(size: 14, bold: true);
+        status.SetBinding(Label.TextProperty, static (HouseCard card) => card.Status);
+        status.SetBinding(Label.TextColorProperty, static (HouseCard card) => card.IsWelcoming,
+            converter: StatusColorConverter);
         var top = new Grid { ColumnDefinitions = [new(GridLength.Star), new(GridLength.Auto)], ColumnSpacing = 12 };
-        var nickname = Ui.Bound(nameof(HouseCard.Nickname), 22, bold: true);
+        var nickname = Ui.Text(size: 22, bold: true);
+        nickname.SetBinding(Label.TextProperty, static (HouseCard card) => card.Nickname);
         SemanticProperties.SetHeadingLevel(nickname, SemanticHeadingLevel.Level2);
         top.Add(nickname);
-        top.Add(Ui.Bound(nameof(HouseCard.Emoji), 32), 1);
+        var emoji = Ui.Text(size: 32);
+        emoji.SetBinding(Label.TextProperty, static (HouseCard card) => card.Emoji);
+        top.Add(emoji, 1);
         var button = Ui.Button(viewModel.Mode == NeighborhoodMode.Host ? "Edit house & status" : "Visit details",
             "OpenHouseButton", viewModel.OpenHouseCommand, secondary: true);
         button.BackgroundColor = Color.FromArgb("#3A2B4F");
-        button.SetBinding(Button.CommandParameterProperty, ".");
+        button.SetBinding(Button.CommandParameterProperty, static (HouseCard card) => card);
         button.SetBinding(SemanticProperties.DescriptionProperty,
-            new Binding(nameof(HouseCard.Nickname), stringFormat: viewModel.Mode == NeighborhoodMode.Host ? "Edit {0}" : "View {0}"));
+            static (HouseCard card) => card.Nickname,
+            stringFormat: viewModel.Mode == NeighborhoodMode.Host ? "Edit {0}" : "View {0}");
+        var address = Ui.Text(size: 14, color: Ui.Muted);
+        address.SetBinding(Label.TextProperty, static (HouseCard card) => card.Address);
+        var hours = Ui.Text(size: 15);
+        hours.SetBinding(Label.TextProperty, static (HouseCard card) => card.Hours);
+        var features = Ui.Text(size: 13, color: Ui.Muted);
+        features.SetBinding(Label.TextProperty, static (HouseCard card) => card.Features);
+        var visitStatus = Ui.Text(size: 14, color: Ui.Mint);
+        visitStatus.SetBinding(Label.TextProperty, static (HouseCard card) => card.VisitStatus);
         var content = new VerticalStackLayout
         {
             Spacing = 9,
             Children =
             {
-                top, Ui.Bound(nameof(HouseCard.Address), 14, Ui.Muted), status,
-                Ui.Bound(nameof(HouseCard.Hours), 15),
-                Ui.Bound(nameof(HouseCard.Features), 13, Ui.Muted),
-                Ui.Bound(nameof(HouseCard.VisitStatus), 14, Ui.Mint), button
+                top, address, status, hours, features, visitStatus, button
             }
         };
         var card = Ui.Card(content);
-        card.Margin = new Thickness(22, 0, 22, 14);
+        card.Margin = new Thickness(0, 0, 0, 14);
         return card;
+    }
+
+    private sealed class WelcomingColorConverter : IValueConverter
+    {
+        public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture) =>
+            value is true ? Ui.Mint : Ui.Muted;
+
+        public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture) =>
+            throw new NotSupportedException();
     }
 
     protected override async void OnAppearing()
