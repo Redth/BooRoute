@@ -1,4 +1,5 @@
 using System.Text.Json;
+using BooRoute.Core.Localization;
 
 namespace BooRoute.Core;
 
@@ -49,7 +50,7 @@ public sealed class JsonDemoStateStore : IDemoStateStore
                 state.Houses.Any(house => house is null || house.Validate().Count != 0) ||
                 state.Houses.Select(house => house.Id).Distinct().Count() != state.Houses.Count ||
                 state.Visited.Any(id => !state.Houses.Any(house => house.Id == id)))
-                throw new InvalidDataException("The saved demo data is invalid. It has not been overwritten.");
+                throw new InvalidDataException(AppText.Default.Strings.SavedDataInvalid);
             return state;
         }
     }
@@ -142,7 +143,7 @@ public sealed class MockNeighborhoodBackend(IDemoStateStore store, TimeProvider 
         {
             var current = await GetStateAsync(cancellationToken);
             if (!current.Houses.Any(house => house.Id == houseId))
-                throw new ArgumentException("That house is not in this demo neighborhood.", nameof(houseId));
+                throw new ArgumentException(AppText.Default.Strings.HouseMissing, nameof(houseId));
             var visits = new HashSet<Guid>(current.Visited);
             if (visited)
                 visits.Add(houseId);

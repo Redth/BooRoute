@@ -30,6 +30,12 @@ xcrun simctl launch booted com.stephanedelcroix.booroute
 ```
 
 For Android, build with `-f net11.0-android`.
+For an APK that can be installed directly with `adb` instead of IDE fast deployment:
+
+```sh
+dotnet build src/BooRoute/BooRoute.csproj -f net11.0-android \
+  -p:RuntimeIdentifier=android-arm64 -p:EmbedAssembliesIntoApk=true
+```
 
 For Mac Catalyst on Apple Silicon:
 
@@ -43,8 +49,10 @@ Use the Xcode version required by the installed Mac Catalyst workload. For local
 preview testing with Xcode 27.1 and the .NET 11 RC2 workload that expects Xcode 27.0,
 append `-p:ValidateXcodeVersion=false` to the build command. This only skips the
 version check; it does not guarantee compatibility with other Xcode versions.
-The Mac app uses MAUI's scene lifecycle, as required by the Xcode 27 SDK, while
+The iOS and Mac apps use MAUI's scene lifecycle, as required by the Xcode 27 SDK, while
 retaining a single window.
+When changing Apple platform `Info.plist` files, use `-t:Rebuild` to ensure the
+updated metadata is packaged by the preview toolchain.
 
 `ValidateXcodeVersion` is set to `false` to allow the demo to build with Xcode 27.1
 while the installed iOS workload expects 27.0. This bypasses only the version check;
@@ -69,6 +77,32 @@ atomic file replacement. Errors are displayed rather than replacing corrupt data
 with a fresh success-shaped dataset. To start over, uninstall and reinstall the
 app (this deletes its local demo data).
 
+## Canadian English and French
+
+The interface follows the system's app language: Canadian English wording is the
+English fallback, and Canadian French is available through the shared `fr`
+resources (including `fr-CA` and other French locales). Android 13+ exposes these
+languages in its per-app language settings; iOS uses its system/per-app language
+selection. Relaunch after changing the language. No separate Canada mode is needed.
+
+[Shiny LocalizeGen](https://shinylib.net/localizegen/) generates typed accessors
+and DI registration from `src/BooRoute.Core/Localization/AppText.resx` and
+`AppText.fr.resx`. Keep both files' keys and format arguments in sync. Navigation,
+filters, statuses, accessibility descriptions, validation, and errors use these
+resources; enum values and the `neighborhood.json` format remain unchanged.
+
+New demo houses use the language selected on first launch. Once saved, their names,
+fictional addresses, and descriptions are editable data: changing language does
+not translate or overwrite those fields, reset visits, or reseed existing data.
+Accented names and free-form fictional Canadian addresses are supported.
+
+House cards and native time-picker fields use the platform's short-time formatter,
+including the user's 12/24-hour preference rather than a fixed `HH:mm` pattern.
+Welcoming rules still use device-local wall time for this single-device demo.
+Timezone coverage includes Newfoundland's half-hour offset, the autumn clock
+change, Saskatchewan, and Yukon. A future multi-region service would need each
+house's timezone, not just the viewer's device timezone.
+
 ## Structure
 
 - `src/BooRoute`: native MAUI pages, MVVM view models, and dependency injection.
@@ -82,9 +116,14 @@ dotnet test tests/BooRoute.Core.Tests/BooRoute.Core.Tests.csproj
 
 Verified for this initial version: the iOS simulator build, launch, welcoming/scare/quiet
 filters, private visit tracking, demo-host status changes, registration validation,
-and persistence after process restart. All 24 core tests pass. Mac Catalyst startup
+and persistence after process restart. All 90 core tests pass, including resource
+parity/fallback, pluralization, Unicode, cross-language persistence, and Canadian
+timezone cases. Mac Catalyst startup
 has also been verified on Apple Silicon with Xcode 27.1 using the preview version
-check override above. Android, Windows, and physical devices have not been verified.
+check override above. The localized app also builds for iOS, Android (Debug and
+Release), and Mac Catalyst; French startup has been checked on an iOS simulator and
+an Android API 35 emulator, including the trimmed Android Release package.
+Windows and physical devices have not been verified.
 
 The service boundary can later be replaced with a real backend. Real authentication,
 host ownership, moderation, consent, and safe address sharing would be necessary
