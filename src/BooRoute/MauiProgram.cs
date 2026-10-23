@@ -1,6 +1,10 @@
 ﻿using Microsoft.Extensions.Logging;
 using BooRoute.Core;
 
+#if DEBUG
+using Microsoft.Maui.DevFlow.Agent;
+#endif
+
 namespace BooRoute;
 
 public static class MauiProgram
@@ -10,6 +14,9 @@ public static class MauiProgram
         var builder = MauiApp.CreateBuilder();
         builder
             .UseMauiApp<App>()
+#if !WINDOWS
+            .UseMauiMaps()
+#endif
             .ConfigureFonts(fonts =>
             {
                 fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
@@ -24,6 +31,7 @@ public static class MauiProgram
 
 #if DEBUG
         builder.Logging.AddDebug();
+        builder.AddMauiDevFlowAgent();
 #endif
 
         return builder.Build();

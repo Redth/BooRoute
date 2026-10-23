@@ -17,6 +17,8 @@
   <ItemGroup>
     <Using Include="Xunit" />
     <ProjectReference Include="../../src/BooRoute.Core/BooRoute.Core.csproj" />
+    <Compile Include="../../src/BooRoute/ViewModels/HouseCards.cs" Link="Presentation/HouseCards.cs" />
+    <Compile Include="../../src/BooRoute/Pages/HouseGridLayout.cs" Link="Presentation/HouseGridLayout.cs" />
   </ItemGroup>
 
 </Project>
