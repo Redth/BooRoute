@@ -32,8 +32,8 @@ public sealed class HouseDetailsPage : ContentPage
                 Children =
                 {
                     Ui.Text(card.Emoji, 72), name, Ui.Text(house.Address, 16, Ui.Muted),
-                    Ui.DemoBanner("FICTIONAL DESTINATION · Demo neighborhood only"),
-                    status, Ui.Text($"Daily welcoming hours: {card.Hours}", 17),
+                    Ui.DemoBanner("DEMO DESTINATION · Not a participating host · Do not visit for treats"),
+                    status, Ui.Text($"Simulated welcoming hours: {card.Hours}", 17),
                     Ui.Text(house.Description, 18),
                     Ui.Card(new VerticalStackLayout
                     {
@@ -43,7 +43,7 @@ public sealed class HouseDetailsPage : ContentPage
                             Ui.Text($"Scare level: {house.ScareLevel}", 17, bold: true),
                             Ui.Text(house.QuietVisits ? "✓ Quiet visits available" : "Quiet visits not indicated", 16),
                             Ui.Text(house.StepFreeAccess ? "✓ Step-free access indicated" : "Step-free access not indicated", 16),
-                            Ui.Text("Accessibility details are supplied by the demo host, not independently verified.", 13, Ui.Muted)
+                            Ui.Text("Scare levels, quiet visits and accessibility are demo data, not verified venue information.", 13, Ui.Muted)
                         }
                     }),
                     Ui.Errors(), visit,

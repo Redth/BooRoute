@@ -6,8 +6,12 @@ switch to the demo-host experience to register a fictional house or change its s
 
 **This is a local demo, not a public neighborhood service.** Both experiences
 share one asynchronous, in-app mock backend. There is no server, account verification,
-cloud synchronization, or tracking. All addresses are fictional. Do not enter real
-children's information or publish real home addresses.
+cloud synchronization, or tracking. The initial stops use real public venue
+addresses around Microsoft's Cologne office at Holzmarkt 2a. **These venues are
+not registered Halloween hosts.** All treats, statuses, welcoming hours, scare
+levels, quiet-visit flags and accessibility details are simulated; do not visit
+these places for treats. Do not enter real children's information or private
+home addresses.
 
 ## Run
 
@@ -135,6 +139,9 @@ development builds and fictional demo data.
 
 Ten houses are seeded on first use. Their initial daily welcoming windows are
 relative to the first launch time, so the demo works during the day or across midnight.
+Existing saved neighborhoods, including older fictional addresses, are preserved;
+upgrading does not overwrite houses or visits. Use a fresh installation to see
+the Cologne seed.
 The closing boundary is exclusive. Status and time both determine availability.
 The foreground list refreshes every 30 seconds, on appearance, on resume, and
 after successful mock-backend changes.
@@ -143,6 +150,25 @@ Data is saved to `neighborhood.json` in the app's private data directory using
 atomic file replacement. Errors are displayed rather than replacing corrupt data
 with a fresh success-shaped dataset. To start over, uninstall and reinstall the
 app (this deletes its local demo data).
+
+### Cologne demo locations
+
+The public venues below provide recognizable geography for the live demo, not
+an actual trick-or-treat route. Address sources are linked for verification.
+Museum Schnütgen and the Rautenstrauch-Joest-Museum share an entrance address.
+
+| Public venue | Address in Köln | Source |
+|---|---|---|
+| Microsoft Cologne | Holzmarkt 2a, 50676 | [Microsoft](https://news.microsoft.com/de-de/standorte-directions/) |
+| art'otel Cologne | Holzmarkt 4, 50676 | [Hotel](https://artotel.com/en/hotels/cologne/central-cologne/contact/) |
+| Schokoladenmuseum | Am Schokoladenmuseum 1a, 50678 | [Museum](https://www.schokoladenmuseum.de/impressum/) |
+| Deutsches Sport & Olympia Museum | Im Zollhafen 1, 50678 | [Museum](https://sportmuseum.de/) |
+| Trinitatiskirche | Filzengraben 4, 50676 | [Venue](https://www.trinitatiskirche-koeln.de/service-kontakt/wegbeschreibung/) |
+| NH Köln Altstadt | Holzmarkt 47, 50676 | [Hotel](https://www.nh-hotels.com/en/hotel/nh-koeln-altstadt) |
+| Motel One Köln-Altstadt | Tel-Aviv-Straße 6, 50676 | [Hotel](https://www.motel-one.com/de/hotels/koeln/hotel-koeln-altstadt/) |
+| Wasserturm Hotel Cologne | Kaygasse 2, 50676 | [Hotel](https://www.wasserturm-hotel-cologne.com/en/contacts-location) |
+| Museum Schnütgen | Cäcilienstraße 29-33, 50667 | [Museum](https://www.museum-schnuetgen.de/) |
+| Rautenstrauch-Joest-Museum | Cäcilienstraße 29-33, 50667 | [City of Cologne](https://www.stadt-koeln.de/service/adressen/00142/index.html) |
 
 ## Adaptive entry collections
 
