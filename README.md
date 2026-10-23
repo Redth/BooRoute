@@ -22,6 +22,10 @@ MAUI workloads, plus Xcode for iOS/Mac Catalyst or the Android SDK for Android.
 The project sets `PublishAot` to `true` unconditionally. With the .NET 11 mobile
 toolchain, Debug builds use CoreCLR.
 
+All projects treat warnings as errors. Android NativeAOT remains experimental;
+the app intentionally opts in for this demo and suppresses only its `XA1040`
+warning. Trimming and AOT compatibility warnings remain enabled.
+
 ```sh
 dotnet workload restore src/BooRoute/BooRoute.csproj
 dotnet build src/BooRoute/BooRoute.csproj -f net11.0-ios
