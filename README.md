@@ -15,10 +15,12 @@ The app targets .NET 11 using the installed MAUI preview toolchain. The SDK used
 to build the demo is recorded in `global.json`; install a compatible SDK and
 MAUI workloads, plus Xcode for iOS/Mac Catalyst or the Android SDK for Android.
 
+The project sets `PublishAot` to `true` unconditionally. With the .NET 11 mobile
+toolchain, Debug builds use CoreCLR.
+
 ```sh
 dotnet workload restore src/BooRoute/BooRoute.csproj
-dotnet build src/BooRoute/BooRoute.csproj -f net11.0-ios \
-  -p:RuntimeIdentifier=iossimulator-arm64
+dotnet build src/BooRoute/BooRoute.csproj -f net11.0-ios
 ```
 
 Launch from your MAUI-capable IDE, or install the built `.app` on a booted
