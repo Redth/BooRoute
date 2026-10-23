@@ -29,8 +29,22 @@ xcrun simctl install booted src/BooRoute/bin/Debug/net11.0-ios/iossimulator-arm6
 xcrun simctl launch booted com.stephanedelcroix.booroute
 ```
 
-For Android, build with `-f net11.0-android`; for Mac Catalyst use
-`-f net11.0-maccatalyst`. Those targets require their corresponding toolchains.
+For Android, build with `-f net11.0-android`.
+
+For Mac Catalyst on Apple Silicon:
+
+```sh
+dotnet build src/BooRoute/BooRoute.csproj -t:Rebuild -f net11.0-maccatalyst \
+  -p:RuntimeIdentifier=maccatalyst-arm64
+open src/BooRoute/bin/Debug/net11.0-maccatalyst/maccatalyst-arm64/BooRoute.app
+```
+
+Use the Xcode version required by the installed Mac Catalyst workload. For local
+preview testing with Xcode 27.1 and the .NET 11 RC2 workload that expects Xcode 27.0,
+append `-p:ValidateXcodeVersion=false` to the build command. This only skips the
+version check; it does not guarantee compatibility with other Xcode versions.
+The Mac app uses MAUI's scene lifecycle, as required by the Xcode 27 SDK, while
+retaining a single window.
 
 ## Try the demo
 
@@ -64,8 +78,9 @@ dotnet test tests/BooRoute.Core.Tests/BooRoute.Core.Tests.csproj
 
 Verified for this initial version: the iOS simulator build, launch, welcoming/scare/quiet
 filters, private visit tracking, demo-host status changes, registration validation,
-and persistence after process restart. All 24 core tests pass. Android, Mac Catalyst,
-Windows, and physical devices have not been verified.
+and persistence after process restart. All 24 core tests pass. Mac Catalyst startup
+has also been verified on Apple Silicon with Xcode 27.1 using the preview version
+check override above. Android, Windows, and physical devices have not been verified.
 
 The service boundary can later be replaced with a real backend. Real authentication,
 host ownership, moderation, consent, and safe address sharing would be necessary
